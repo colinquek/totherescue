@@ -1,0 +1,47 @@
+## Project Overview
+
+**Purpose:** Automated load testing toolkit for SomeGPT (NCS GPT platform) enabling API discovery, token extraction, and scalable load generation for traffic testing.
+
+**Target System:** https://ncsgpt.ncs.com.sg/
+
+**Test Focus:** Direct API calls with JWT token authentication, parallel session support, and automated token lifecycle management.
+
+## Goals
+
+1. **Token Management:** Automatic extraction and validation of JWT tokens from browser sessions
+2. **Load Testing:** Parallel session support with configurable concurrency and pause duration
+3. **Metrics Collection:** Response time, success rate, and token usage tracking
+4. **Team Collaboration:** Cross-platform scripts for easy onboarding and Git-safe configuration
+
+## Scope
+
+### In Scope
+- Automated token extraction via Playwright browser automation
+- Direct API load testing (no browser overhead during tests)
+- Automatic token validation and refresh on expiration
+- Cross-platform automation scripts (Windows, Mac, Linux)
+- Results storage and analysis (JSON format)
+- Team-friendly workflows (setup + run scripts)
+
+### Out of Scope
+- Containerization (Docker) - deferred for simplicity
+- Automated login (Azure AD MFA requires manual intervention)
+- Real-time monitoring dashboard
+- CI/CD pipeline integration
+
+## Success Criteria
+
+- [x] Token extraction automated (Playwright-based)
+- [x] Direct API calls working with dual authentication headers
+- [x] Parallel session support implemented
+- [x] Automatic token validation and refresh
+- [x] Cross-platform setup and runner scripts
+- [x] Results saved to timestamped JSON files
+- [x] Git-safe (tokens never committed)
+
+## Key Constraints
+
+- JWT tokens expire every ~1 hour (requires re-extraction)
+- Azure AD MFA blocks automated login (manual step required)
+- API requires dual headers: Authorization + X-API-Key
+- Nested request format: `message: [[{type, text}]]`

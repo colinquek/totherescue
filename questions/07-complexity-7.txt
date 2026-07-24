@@ -1,0 +1,1 @@
+You have 12 coins that look identical. One is counterfeit and weighs different (heavier OR lighter, you don't know which). Using a balance scale only, what is the minimum number of weighings to find the fake coin AND determine if it's heavier or lighter? Describe your complete strategy.

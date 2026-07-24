@@ -1,0 +1,1 @@
+In a room with 23 people, what is the probability that at least two people share the same birthday? (Assume 365 days/year, ignore leap years, uniform distribution). Use the complement method: P(at least one match) = 1 - P(no matches). Show all steps and explain why the result is surprising.

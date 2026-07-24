@@ -1,0 +1,11 @@
+# Semgrep configuration for rescueme
+# https://semgrep.dev/docs/configuration/configuration-reference/
+
+rules:
+  # Custom rules for this project
+  - id: detect-env-local
+    patterns:
+      - pattern: .env.local
+    message: "Environment file detected - ensure it's in .gitignore"
+    languages: [generic]
+    severity: INFO

@@ -1,0 +1,13 @@
+Quantum Computing Challenge:
+
+A 2-qubit system is in the Bell state: |ψ⟩ = (|00⟩ + |11⟩)/√2
+
+Part 1: If you measure qubit 1 and get |0⟩, what is the state of qubit 2? Explain.
+
+Part 2: Apply a Hadamard gate to qubit 1. Write the new state in the form: a|00⟩ + b|01⟩ + c|10⟩ + d|11⟩
+
+Part 3: What are the probabilities of measuring each of the four basis states (|00⟩, |01⟩, |10⟩, |11⟩)?
+
+Part 4: Explain why this state demonstrates quantum entanglement. If Alice measures qubit 1 and Bob measures qubit 2 (they're light-years apart), how do their results correlate? Does this violate special relativity?
+
+Show all mathematical work and explain the physical significance.

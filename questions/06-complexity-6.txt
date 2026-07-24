@@ -1,0 +1,1 @@
+A car travels from City A to City B at 60 km/h, then immediately returns from B to A at 40 km/h. What is the average speed for the entire round trip? Show why the answer is NOT 50 km/h and derive the correct formula.

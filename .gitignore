@@ -1,0 +1,20 @@
+# Dependencies
+node_modules/
+dist/
+
+# Environment and tokens
+.env
+.env.local
+
+# Test results
+results/
+
+# Logs
+*.log
+
+# Captured data
+captured-api-endpoints.json
+
+# OS files
+.DS_Store
+Thumbs.db
