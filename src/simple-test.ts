@@ -27,13 +27,8 @@ if (!authMatch || !apiKeyMatch) {
 const AUTH_TOKEN = authMatch[1].trim();
 const API_KEY = apiKeyMatch[1].trim();
 
-const API_ENDPOINT = process.env.API_ENDPOINT || envContent.match(/^API_ENDPOINT=(.+)$/m)?.[1].trim();
-
-if (!API_ENDPOINT) {
-  console.error('❌ API_ENDPOINT not found in .env.local!');
-  console.error('   Please add API_ENDPOINT to your .env.local file\n');
-  process.exit(1);
-}
+// Hardcoded API endpoint
+const API_ENDPOINT = 'https://ncsgptapimiddlewareprod.victoriousglacier-6d23f7bf.southeastasia.azurecontainerapps.io/orchestrator/sk-chat/stream';
 
 const httpsAgent = new https.Agent({
   rejectUnauthorized: false
@@ -79,7 +74,7 @@ async function testAPI(): Promise<void> {
   };
   
   console.log('Sending request...');
-  console.log(`URL: ${url}`);
+  console.log(`URL: ${API_ENDPOINT}`);
   console.log(`Headers: Authorization (Bearer ${AUTH_TOKEN.substring(0, 30)}...)`);
   console.log(`         X-API-Key (Bearer ${API_KEY.substring(0, 30)}...)\n`);
   
