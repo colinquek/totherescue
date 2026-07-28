@@ -284,19 +284,10 @@ async function runSession(
   let iteration = 0;
   const startTime = Date.now();
   
-  // Run until duration exceeded or stopped
-  while (!stopSignal.stopped) {
-    // Check if duration exceeded
-    if (DURATION_MINUTES > 0) {
-      const elapsedMinutes = (Date.now() - startTime) / 60000;
-      if (elapsedMinutes >= DURATION_MINUTES) {
-        console.log(`\nDuration exceeded (${DURATION_MINUTES} minutes). Stopping...`);
-        break;
-      }
-    }
-    
-    const questionIndex = iteration % questions.length;
-    const question = questions[questionIndex];
+  // Run through all questions sequentially (one pass)
+  const totalQuestions = questions.length;
+  for (let i = 0; i < totalQuestions && !stopSignal.stopped; i++) {
+    const question = questions[i];
     iteration++;
     
     console.log(`\nRequest ${iteration}:`);
@@ -338,11 +329,10 @@ async function runSession(
       console.log('');
     } else if (result.response && result.response.includes('-=COMPLETED=-')) {
       console.log(`   -=COMPLETED=- detected\n`);
-      break; // Exit immediately when completion detected
     }
     
-    // Wait before next question
-    if (!stopSignal.stopped) {
+    // Wait before next question (skip after last question)
+    if (i < totalQuestions - 1 && !stopSignal.stopped) {
       const pauseMs = PAUSE_MINUTES * 60000;
       console.log(`\nPausing for ${PAUSE_MINUTES} minutes...`);
       console.log(`   Next request at: ${new Date(Date.now() + pauseMs).toLocaleTimeString()}\n`);
