@@ -2,7 +2,7 @@
   "questions": [
     {
       "id": "complexity-1",
-      "file": "01-complexity-1.txt",
+      "file": "prompts.txt",
       "name": "Basic Addition",
       "complexity": 1,
       "description": "Simple two-digit addition with working"

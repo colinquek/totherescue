@@ -1,1 +1,0 @@
-Calculate the area of a circle with radius 7 cm. Use π = 3.14159. Show the formula A = πr² and all calculation steps.

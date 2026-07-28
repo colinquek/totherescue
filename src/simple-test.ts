@@ -20,7 +20,7 @@ const authMatch = envContent.match(/AUTH_TOKEN=(.+)/);
 const apiKeyMatch = envContent.match(/API_KEY=(.+)/);
 
 if (!authMatch || !apiKeyMatch) {
-  console.error('❌ Tokens not found. Run: npm run extract-tokens');
+  console.error('Tokens not found. Run: npm run extract-tokens');
   process.exit(1);
 }
 
@@ -35,7 +35,7 @@ const httpsAgent = new https.Agent({
 });
 
 async function testAPI(): Promise<void> {
-  console.log('🧪 Testing SomeGPT API with exact browser format\n');
+  console.log('Testing SomeGPT API with exact browser format\n');
   
   // Exact format from browser
   const requestBody = {
@@ -94,16 +94,16 @@ async function testAPI(): Promise<void> {
     const text = await response.text();
     
     if (response.ok) {
-      console.log('✅ SUCCESS!');
+      console.log('SUCCESS!');
       console.log('Response:');
       console.log(text.substring(0, 2000));
     } else {
-      console.log('❌ Failed');
+      console.log('Failed');
       console.log('Response:', text);
     }
     
   } catch (error) {
-    console.log('❌ Error:', error instanceof Error ? error.message : error);
+    console.log('Error:', error instanceof Error ? error.message : error);
   }
 }
 

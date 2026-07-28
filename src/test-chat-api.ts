@@ -25,7 +25,7 @@ const httpsAgent = new https.Agent({
 const envPath = path.join(__dirname, '..', '.env.local');
 
 if (!fs.existsSync(envPath)) {
-  console.error('❌ .env.local not found!');
+  console.error('.env.local not found!');
   console.error('   Run: npm run extract-tokens   to get fresh tokens\n');
   process.exit(1);
 }
@@ -38,7 +38,7 @@ const apiKeyMatch = envContent.match(/API_KEY=(.+)/);
 const convMatch = envContent.match(/CONVERSATION_ID=(.+)/);
 
 if (!authMatch || !apiKeyMatch) {
-  console.error('❌ Tokens not found in .env.local!');
+  console.error('Tokens not found in .env.local!');
   console.error('   Run: npm run extract-tokens   to get fresh tokens\n');
   process.exit(1);
 }
@@ -52,7 +52,7 @@ const API_ENDPOINT = 'https://ncsgptapimiddlewareprod.victoriousglacier-6d23f7bf
 
 if (!CONVERSATION_ID) {
   CONVERSATION_ID = randomUUID();
-  console.log(`📝 Generated new Conversation ID: ${CONVERSATION_ID}`);
+  console.log(`Generated new Conversation ID: ${CONVERSATION_ID}`);
 }
 
 interface TextItem {
@@ -115,7 +115,7 @@ interface ChatRequest {
 }
 
 async function sendChatMessage(message: string): Promise<void> {
-  console.log('📤 Sending message to SomeGPT API...\n');
+  console.log('Sending message to SomeGPT API...\n');
   console.log(`Endpoint: ${API_ENDPOINT}`);
   console.log(`Message: "${message}"\n`);
   
@@ -159,7 +159,7 @@ async function sendChatMessage(message: string): Promise<void> {
   };
   
   console.log('Request body:', JSON.stringify(requestBody, null, 2));
-  console.log('\n📡 Sending request...\n');
+  console.log('\nSending request...\n');
   
   try {
     const startTime = Date.now();
@@ -179,7 +179,7 @@ async function sendChatMessage(message: string): Promise<void> {
     const responseBody = await response.text();
     
     if (response.ok) {
-      console.log('✅ SUCCESS!\n');
+      console.log('SUCCESS!\n');
       console.log('Response:');
       console.log('─'.repeat(80));
       
@@ -190,7 +190,7 @@ async function sendChatMessage(message: string): Promise<void> {
         
         // Extract message content if it's in OpenAI format
         if (json.choices && json.choices[0]?.message?.content) {
-          console.log('\n📝 Assistant Response:');
+          console.log('\nAssistant Response:');
           console.log('─'.repeat(80));
           console.log(json.choices[0].message.content);
           console.log('─'.repeat(80));
@@ -198,7 +198,7 @@ async function sendChatMessage(message: string): Promise<void> {
         
         // Show token usage if available
         if (json.usage) {
-          console.log('\n📊 Token Usage:');
+          console.log('\nToken Usage:');
           console.log(`   Prompt: ${json.usage.prompt_tokens || 'N/A'}`);
           console.log(`   Completion: ${json.usage.completion_tokens || 'N/A'}`);
           console.log(`   Total: ${json.usage.total_tokens || 'N/A'}`);
@@ -210,27 +210,27 @@ async function sendChatMessage(message: string): Promise<void> {
       
       console.log('─'.repeat(80));
     } else {
-      console.log('❌ FAILED\n');
+      console.log('FAILED\n');
       console.log(`Status: ${response.status}`);
       console.log(`Response: ${responseBody.substring(0, 500)}`);
       
       if (response.status === 401) {
-        console.log('\n⚠️  Token expired! Get fresh tokens:');
+        console.log('\nToken expired! Get fresh tokens:');
         console.log('   Run: npm run extract-tokens\n');
       }
     }
     
   } catch (error) {
-    console.log('❌ ERROR\n');
+    console.log('ERROR\n');
     console.log(error instanceof Error ? error.message : error);
   }
 }
 
 async function main(): Promise<void> {
-  console.log('💬 SomeGPT Chat API Client');
+  console.log('SomeGPT Chat API Client');
   console.log('=========================\n');
   
-  console.log('📋 Configuration loaded from .env.local:');
+  console.log('Configuration loaded from .env.local:');
   console.log(`   AUTH_TOKEN: ${AUTH_TOKEN.substring(0, 50)}...`);
   console.log(`   API_KEY: ${API_KEY.substring(0, 50)}...`);
   console.log(`   Conversation ID: ${CONVERSATION_ID}\n`);
@@ -238,7 +238,7 @@ async function main(): Promise<void> {
   // Test with a simple message
   await sendChatMessage('Hello! This is a test message from the API client.');
   
-  console.log('\n\n📝 Next Steps:');
+  console.log('\n\nNext Steps:');
   console.log('   - If successful, you can now use this for load testing');
   console.log('   - Update the COMPLEXITY_1_QUESTION and COMPLEXITY_5_QUESTION in api-client.ts');
   console.log('   - Run: npm run load-test\n');

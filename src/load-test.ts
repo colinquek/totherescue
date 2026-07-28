@@ -54,7 +54,7 @@ if (fs.existsSync(envPath)) {
 // Generate random conversation ID if not provided
 if (!CONVERSATION_ID) {
   CONVERSATION_ID = randomUUID();
-  console.log(`📝 Generated new Conversation ID: ${CONVERSATION_ID}\n`);
+  console.log(`Generated new Conversation ID: ${CONVERSATION_ID}\n`);
 }
 
 // Hardcoded API endpoint
@@ -104,7 +104,7 @@ const QUESTIONS_INDEX = path.join(QUESTIONS_DIR, 'index.json');
 
 function loadQuestions(): string[] {
   if (!fs.existsSync(QUESTIONS_INDEX)) {
-    console.error(`❌ Questions index not found: ${QUESTIONS_INDEX}`);
+    console.error(`Questions index not found: ${QUESTIONS_INDEX}`);
     console.error('   Please create questions/index.json with question definitions\n');
     process.exit(1);
   }
@@ -118,7 +118,7 @@ function loadQuestions(): string[] {
     const questionFile = path.join(QUESTIONS_DIR, entry.file);
     
     if (!fs.existsSync(questionFile)) {
-      console.warn(`⚠️  Question file not found: ${entry.file}, skipping...`);
+      console.warn(`Question file not found: ${entry.file}, skipping...`);
       continue;
     }
     
@@ -127,21 +127,21 @@ function loadQuestions(): string[] {
   }
   
   if (questions.length === 0) {
-    console.error('❌ No questions loaded from index');
+    console.error('No questions loaded from index');
     console.error('   Please check questions/index.json and ensure files exist\n');
     process.exit(1);
   }
   
-  console.log(`📚 Loaded ${questions.length} question(s) from questions/\n`);
+  console.log(`Loaded ${questions.length} question(s) from questions/\n`);
   return questions;
 }
 
 function validateConfig(): void {
   if (!AUTH_TOKEN) {
-    throw new Error('❌ AUTH_TOKEN not found. Please run: npm run extract-tokens');
+    throw new Error('AUTH_TOKEN not found. Please run: npm run extract-tokens');
   }
   if (!API_KEY) {
-    throw new Error('❌ API_KEY not found. Please run: npm run extract-tokens');
+    throw new Error('API_KEY not found. Please run: npm run extract-tokens');
   }
 }
 
@@ -276,7 +276,7 @@ async function runSession(
   // Load questions first
   const questions = loadQuestions();
   
-  console.log(`\n🚀 Sequential Test Session Started`);
+  console.log(`\nSequential Test Session Started`);
   console.log(`   Total questions: ${questions.length}`);
   console.log(`   Pause between questions: ${PAUSE_MINUTES} minutes`);
   console.log(`   Duration: ${DURATION_MINUTES === 0 ? 'Run once' : `${DURATION_MINUTES} minutes`}\n`);
@@ -290,7 +290,7 @@ async function runSession(
     if (DURATION_MINUTES > 0) {
       const elapsedMinutes = (Date.now() - startTime) / 60000;
       if (elapsedMinutes >= DURATION_MINUTES) {
-        console.log(`\n⏱️  Duration exceeded (${DURATION_MINUTES} minutes). Stopping...`);
+        console.log(`\nDuration exceeded (${DURATION_MINUTES} minutes). Stopping...`);
         break;
       }
     }
@@ -299,7 +299,7 @@ async function runSession(
     const question = questions[questionIndex];
     iteration++;
     
-    console.log(`\n📤 Request ${iteration}:`);
+    console.log(`\nRequest ${iteration}:`);
     console.log(`   ${question}`);
     console.log(`\n   Sending request...`);
     
@@ -323,11 +323,11 @@ async function runSession(
     responseTimes.push(result.responseTime);
     metrics.avgResponseTime = responseTimes.reduce((a, b) => a + b, 0) / responseTimes.length;
     
-    console.log(`   ${result.success ? '✅' : '❌'} ${result.responseTime}ms${result.tokens ? ` | ${result.tokens} tokens` : ''}`);
+    console.log(`   ${result.success ? '[OK]' : '[FAIL]'} ${result.responseTime}ms${result.tokens ? ` | ${result.tokens} tokens` : ''}`);
     
     // Log response if not completed
     if (result.response && !result.response.includes('-=COMPLETED=-')) {
-      console.log(`\n   📝 Response:`);
+      console.log(`\n   Response:`);
       const responseLines = result.response.split('\n').slice(0, 50);
       responseLines.forEach(line => {
         console.log(`      ${line}`);
@@ -337,14 +337,14 @@ async function runSession(
       }
       console.log('');
     } else if (result.response && result.response.includes('-=COMPLETED=-')) {
-      console.log(`   ⏹️  -=COMPLETED=- detected\n`);
+      console.log(`   -=COMPLETED=- detected\n`);
       break; // Exit immediately when completion detected
     }
     
     // Wait before next question
     if (!stopSignal.stopped) {
       const pauseMs = PAUSE_MINUTES * 60000;
-      console.log(`\n⏳ Pausing for ${PAUSE_MINUTES} minutes...`);
+      console.log(`\nPausing for ${PAUSE_MINUTES} minutes...`);
       console.log(`   Next request at: ${new Date(Date.now() + pauseMs).toLocaleTimeString()}\n`);
       
       await new Promise<void>(resolve => {
@@ -365,19 +365,19 @@ async function runSession(
   
   metrics.endTime = Date.now();
   const durationMinutes = ((metrics.endTime - metrics.startTime) / 60000).toFixed(2);
-  console.log(`\n🏁 Sequential test completed: ${metrics.successfulRequests}/${metrics.totalRequests} successful`);
+  console.log(`\nSequential test completed: ${metrics.successfulRequests}/${metrics.totalRequests} successful`);
   console.log(`   Total duration: ${durationMinutes} minutes\n`);
   return metrics;
 }
 
 async function main(): Promise<void> {
-  console.log('⚡ SomeGPT Load Test');
+  console.log('SomeGPT Load Test');
   console.log('===================\n');
   
   try {
     validateConfig();
     
-    console.log('📋 Configuration:');
+    console.log('Configuration:');
     console.log(`   API Endpoint: ${API_ENDPOINT}`);
     console.log(`   Conversation ID: ${CONVERSATION_ID}`);
     console.log(`   Pause between questions: ${PAUSE_MINUTES} minute(s)`);
@@ -392,17 +392,17 @@ async function main(): Promise<void> {
     }
     
     const startTime = new Date();
-    console.log(`🕐 Start time: ${startTime.toISOString()}\n`);
+    console.log(`Start time: ${startTime.toISOString()}\n`);
     
     const stopSignal = { stopped: false };
     const sessionId = 'sequential-session';
     
     // Run single sequential session
-    console.log('🔄 Running questions sequentially with 3-minute pauses...\n');
+    console.log('Running questions sequentially with 3-minute pauses...\n');
     const metrics = await runSession(sessionId, stopSignal);
     
     const endTime = new Date();
-    console.log(`🕐 End time: ${endTime.toISOString()}\n`);
+    console.log(`End time: ${endTime.toISOString()}\n`);
     
     // Calculate summary (single session)
     const totalRequests = metrics.totalRequests;
@@ -429,7 +429,7 @@ async function main(): Promise<void> {
     fs.writeFileSync(resultsFile, JSON.stringify(results, null, 2), 'utf-8');
     
     // Print summary
-    console.log('\n📊 Sequential Test Summary');
+    console.log('\nSequential Test Summary');
     console.log('=========================');
     console.log(`Questions Completed: ${totalRequests}/10`);
     console.log(`Successful: ${totalSuccessful} (${results.summary.successRate.toFixed(2)}%)`);
@@ -438,25 +438,25 @@ async function main(): Promise<void> {
     console.log(`Total Tokens Generated: ${totalTokens}`);
     console.log(`Total Duration: ${((endTime.getTime() - startTime.getTime()) / 60000).toFixed(2)} minutes`);
     console.log(`Avg Time per Question: ${((endTime.getTime() - startTime.getTime()) / totalRequests / 1000).toFixed(2)} seconds`);
-    console.log(`\n📁 Results saved to: ${resultsFile}\n`);
+    console.log(`\nResults saved to: ${resultsFile}\n`);
     
     // Check for errors
     const allErrors = metrics.errors || [];
     if (allErrors.length > 0) {
-      console.log('⚠️  Errors encountered:');
+      console.log('Errors encountered:');
       allErrors.forEach((error, i) => {
         console.log(`   ${i + 1}. ${error}`);
       });
       console.log();
     }
     
-    console.log('✅ Load test complete!\n');
-    console.log('📝 To run again with fresh tokens:');
+    console.log('Load test complete!\n');
+    console.log('To run again with fresh tokens:');
     console.log('   npm run extract-tokens  # Get fresh tokens');
     console.log('   npm run load-test       # Run load test\n');
     
   } catch (error) {
-    console.error('❌ Error:', error);
+    console.error('Error:', error);
     process.exit(1);
   }
 }

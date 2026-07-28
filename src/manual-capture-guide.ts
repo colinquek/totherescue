@@ -5,7 +5,7 @@
  * follow these manual steps to extract API information:
  * 
  * STEP 1: Open Browser DevTools
- * - Open NCSGPT in your browser: https://ncsgpt.ncs.com.sg/
+ * - Open SomeGPT in your browser: https://ncsgpt.ncs.com.sg/
  * - Login to your account
  * - Navigate to a conversation (e.g., the Fibonacci one)
  * - Press F12 to open DevTools

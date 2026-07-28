@@ -32,13 +32,13 @@ async function sleep(ms: number): Promise<void> {
 }
 
 async function extractTokens(): Promise<void> {
-  console.log('🔑 SomeGPT Token Extractor');
+  console.log('SomeGPT Token Extractor');
   console.log('=========================\n');
   
   let extractedTokens: ExtractedTokens | null = null;
   
   // Launch browser (will reuse existing session if already logged in)
-  console.log('🚀 Launching browser...');
+  console.log('Launching browser...');
   console.log('   - If you\'re already logged in to SomeGPT, just use that window');
   console.log('   - If not, login in the new browser window\n');
   
@@ -56,7 +56,7 @@ async function extractTokens(): Promise<void> {
   const page: Page = await context.newPage();
   
   // Set up network interception BEFORE navigating
-  console.log('📡 Setting up network monitoring...');
+  console.log('Setting up network monitoring...');
   console.log('   Watching for: /orchestrator/sk-chat/stream requests\n');
   
   page.on('request', (request: Request) => {
@@ -64,7 +64,7 @@ async function extractTokens(): Promise<void> {
     
     // Look for the chat stream endpoint (POST requests only)
     if (url.includes('/orchestrator/sk-chat/stream') && request.method() === 'POST') {
-      console.log('✅ Found chat API request!');
+      console.log('Found chat API request!');
       
       const headers = request.headers();
       const authHeader = headers['authorization'];
@@ -82,10 +82,10 @@ async function extractTokens(): Promise<void> {
   });
   
   // Navigate to NCSGPT
-  console.log('🌐 Opening NCSGPT...');
+  console.log('Opening NCSGPT...');
   await page.goto('https://ncsgpt.ncs.com.sg/', { waitUntil: 'networkidle' });
   
-  console.log('\n📝 Next Steps:');
+  console.log('\nNext Steps:');
   console.log('   1. If not already logged in, login to SomeGPT');
   console.log('   2. Navigate to any conversation');
   console.log('   3. Send a message (e.g., "test")');
@@ -104,12 +104,12 @@ async function extractTokens(): Promise<void> {
     if (waited % 30000 === 0) {
       const minutes = Math.floor((maxWaitTime - waited) / 60000);
       const seconds = Math.floor(((maxWaitTime - waited) % 60000) / 1000);
-      console.log(`⏳ Still waiting... (${minutes}m ${seconds}s remaining)`);
+      console.log(`Still waiting... (${minutes}m ${seconds}s remaining)`);
     }
   }
   
   if (!extractedTokens) {
-    console.log('\n❌ No tokens captured after 5 minutes.');
+    console.log('\nNo tokens captured after 5 minutes.');
     console.log('\nTroubleshooting:');
     console.log('   - Make sure you sent a message in the chat');
     console.log('   - Check if the message was actually sent (visible in conversation)');
@@ -118,7 +118,7 @@ async function extractTokens(): Promise<void> {
     return;
   }
   
-  console.log('\n✅ Tokens captured successfully!\n');
+  console.log('\nTokens captured successfully!\n');
   console.log(`   Authorization: ${extractedTokens.authorization.substring(0, 50)}...`);
   console.log(`   X-API-Key: ${extractedTokens.xApiKey.substring(0, 50)}...`);
   console.log(`   Timestamp: ${extractedTokens.timestamp}\n`);
@@ -138,7 +138,7 @@ DURATION_MINUTES=0
 `;
   
   fs.writeFileSync(envPath, envContent, 'utf-8');
-  console.log(`💾 Tokens saved to: ${envPath}`);
+  console.log(`Tokens saved to: ${envPath}`);
   
   // Update test-chat-api.ts
   const testChatPath = path.join(__dirname, 'test-chat-api.ts');
@@ -158,14 +158,14 @@ DURATION_MINUTES=0
     );
     
     fs.writeFileSync(testChatPath, testChatContent, 'utf-8');
-    console.log(`📝 Updated: ${testChatPath}`);
+    console.log(`Updated: ${testChatPath}`);
   }
   
-  console.log('\n✅ Setup Complete!\n');
-  console.log('📝 Next Steps:');
+  console.log('\nSetup Complete!\n');
+  console.log('Next Steps:');
   console.log('   1. Run: npm run test-chat  (to verify tokens work)');
   console.log('   2. Run: npm run load-test  (to start load testing)');
-  console.log('\n⚠️  Important:');
+  console.log('\nImportant:');
   console.log('   - Tokens expire after ~1 hour');
   console.log('   - Re-run this script to get fresh tokens');
   console.log('   - Tokens are saved in .env.local (gitignored)\n');
@@ -175,6 +175,6 @@ DURATION_MINUTES=0
 
 // Run the extraction
 extractTokens().catch(error => {
-  console.error('❌ Error:', error);
+  console.error('Error:', error);
   process.exit(1);
 });
