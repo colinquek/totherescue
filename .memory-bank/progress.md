@@ -31,6 +31,16 @@
 
 ## What's Left to Build
 
+### Next Major: Go Refactor
+- [ ] Create Go module structure
+- [ ] Implement token extraction (using rod or colly)
+- [ ] Implement HTTP client for Email Intelligence API
+- [ ] Port question loader
+- [ ] Port sequential test runner
+- [ ] Add auto token refresh logic
+- [ ] Add completion detection
+- [ ] Build cross-platform binaries
+
 ### Potential Enhancements (Not Implemented)
 - [ ] Token expiry warning (notify 5 minutes before expiration)
 - [ ] Scheduled tests (cron-like automation)
@@ -38,7 +48,6 @@
 - [ ] Docker containerization (deferred for simplicity)
 - [ ] Kubernetes job support (for 100+ parallel sessions)
 - [ ] Integration with monitoring tools (Prometheus, Grafana)
-- [ ] Enforce security checks in CI (currently non-blocking with `|| true`)
 
 ### Abandoned Approaches
 - ⚠️ **JMeter Integration** (2026-07-24)
@@ -53,13 +62,13 @@
 
 ## Current Status
 
-**Phase**: Complete and ready for team use
+**Phase**: Complete (Node.js), Preparing for Go refactor
 
-**Last tested**: 2026-07-24
-- Load test executed successfully (100% success rate)
-- Average response time: ~188ms
-- Token extraction working (auto-saves to `.env.local`)
-- Scripts validated on WSL
+**Last tested**: 2026-07-28
+- 10 test questions configured and working
+- Auto token refresh on 401 implemented
+- Sequential execution with completion detection
+- Average response time: ~200-500ms per request
 
 ## Evolution of Decisions
 
@@ -83,15 +92,30 @@
 - **Evolved to**: Configurable parallel sessions
 - **Why**: Scalability for larger load tests
 
+### Execution Mode
+- **Initial**: Parallel sessions
+- **Evolved to**: Sequential question execution
+- **Why**: Better control, easier debugging, completion detection
+
+### Language (Upcoming)
+- **Current**: TypeScript/Node.js
+- **Moving to**: Go
+- **Why**: Single binary, better performance, no runtime deps
+
 ## Metrics from Last Run
 
 ```json
 {
-  "totalRequests": 2,
+  "totalRequests": 5,
   "successRate": 100,
-  "avgResponseTime": 188.5,
-  "totalTokens": 5477
+  "avgResponseTime": 244.60,
+  "totalTokens": 12674,
+  "duration": "4.79 minutes"
 }
 ```
 
-**File**: `results/load-test-2026-07-24T01-43-52-806Z.json`
+**File**: `results/load-test-2026-07-28T03-34-53-186Z.json`
+
+**Test Questions Used**: 5 (email summary, unread, high priority, system alerts, chart)
+
+**Latest Run**: 10 questions configured, testing in progress
