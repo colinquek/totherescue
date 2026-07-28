@@ -1,11 +1,39 @@
 {
   "questions": [
     {
-      "id": "complexity-1",
-      "file": "prompts.txt",
-      "name": "Basic Addition",
+      "id": "01-email_summary.txt",
+      "file": "01-email_summary.txt",
+      "name": "Email Summary",
       "complexity": 1,
-      "description": "Simple two-digit addition with working"
+      "description": "Get summary of today's emails"
+    },
+    {
+      "id": "02-unread_mails.txt",
+      "file": "02-unread_mails.txt",
+      "name": "Unread Mails",
+      "complexity": 1,
+      "description": "Find unread emails"
+    },
+    {
+      "id": "03-high_priority_mails.txt",
+      "file": "03-high_priority_mails.txt",
+      "name": "High Priority Mails",
+      "complexity": 2,
+      "description": "Find high priority emails"
+    },
+    {
+      "id": "04-sys_alert_mails.txt",
+      "file": "04-sys_alert_mails.txt",
+      "name": "System Alert Mails",
+      "complexity": 2,
+      "description": "Find system alert emails"
+    },
+    {
+      "id": "05-sys_alert_mails_chart.txt",
+      "file": "05-sys_alert_mails_chart.txt",
+      "name": "System Alert Mails Chart",
+      "complexity": 3,
+      "description": "Get system alert emails with chart"
     }
   ]
 }

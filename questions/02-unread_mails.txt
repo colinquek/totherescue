@@ -1,0 +1,1 @@
+for each Unread email, give me a summary and end your response with "-=COMPLETED=-"
