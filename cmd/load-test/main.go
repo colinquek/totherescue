@@ -91,7 +91,19 @@ func main() {
 	startTime := time.Now()
 	fmt.Printf("Start time: %s\n\n", startTime.Format(time.RFC3339))
 
-	loader := questions.NewLoader(".")
+	// Get the directory where the binary is located
+	execPath, err := os.Executable()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error getting executable path: %v\n", err)
+		os.Exit(1)
+	}
+	baseDir := filepath.Dir(execPath)
+	// If running from bin/, go up one level
+	if filepath.Base(baseDir) == "bin" {
+		baseDir = filepath.Dir(baseDir)
+	}
+
+	loader := questions.NewLoader(baseDir)
 	questions, err := loader.Load()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error loading questions: %v\n", err)

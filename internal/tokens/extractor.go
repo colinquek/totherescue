@@ -40,6 +40,7 @@ func (e *Extractor) Extract() (*ExtractedTokens, error) {
 	defer l.Cleanup()
 
 	browser := rod.New().ControlURL(url).MustConnect()
+	browser.MustIgnoreCertErrors(true)
 	defer browser.Close()
 
 	page, err := browser.Page(proto.TargetCreateTarget{})
@@ -53,14 +54,14 @@ func (e *Extractor) Extract() (*ExtractedTokens, error) {
 		tokenFound      = make(chan struct{}, 1)
 	)
 
-	// Set up request hijacking
 	router := page.HijackRequests()
 	router.MustAdd("*/*", func(h *rod.Hijack) {
 		req := h.Request
 		u := req.URL().String()
+		method := req.Method()
 
-		if strings.Contains(u, "/orchestrator/sk-chat/stream") && req.Method() == "POST" {
-			authHeader := req.Header("authorization")
+		if strings.Contains(u, "/orchestrator/sk-chat/stream") && method == "POST" {
+			authHeader := req.Header("Authorization")
 			apiKeyHeader := req.Header("x-api-key")
 
 			if authHeader != "" && strings.HasPrefix(authHeader, "Bearer ") {
@@ -77,7 +78,7 @@ func (e *Extractor) Extract() (*ExtractedTokens, error) {
 				mu.Unlock()
 
 				fmt.Println("Found chat API request!")
-				fmt.Println("   ✓ Authorization token captured")
+				fmt.Println("   Authorization token captured")
 				select {
 				case tokenFound <- struct{}{}:
 				default:
@@ -101,7 +102,8 @@ func (e *Extractor) Extract() (*ExtractedTokens, error) {
 	fmt.Println("   1. If not already logged in, login to SomeGPT")
 	fmt.Println("   2. Navigate to any conversation")
 	fmt.Println("   3. Send a message (e.g., \"test\")")
-	fmt.Print("   4. I'll automatically capture the tokens...\n")
+	fmt.Println("   4. KEEP THE BROWSER OPEN - I'll capture tokens automatically")
+	fmt.Println("   5. The browser will close automatically once tokens are captured")
 
 	maxWaitTime := 5 * time.Minute
 
@@ -193,12 +195,14 @@ func (e *Extractor) ExtractWithOptions(opts ExtractOptions) (*ExtractedTokens, e
 	defer l.Cleanup()
 
 	browser := rod.New().ControlURL(url).MustConnect()
+	browser.MustIgnoreCertErrors(true)
 	defer browser.Close()
 
 	page, err := browser.Page(proto.TargetCreateTarget{})
 	if err != nil {
 		return nil, fmt.Errorf("failed to create page: %w", err)
 	}
+
 
 	var (
 		mu              sync.Mutex
