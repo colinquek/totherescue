@@ -15,28 +15,28 @@ Write-Host ""
 if (-not (Test-Path ".env.local")) {
   Write-Host "No tokens found. Extracting fresh tokens..." -ForegroundColor Yellow
   Write-Host ""
-  npm run extract-tokens
+  .\bin\extract-tokens.exe
   Write-Host ""
 }
 
 # Step 2: Validate tokens with a test API call
 Write-Host "Validating tokens..."
-$testResult = npm run test-chat *> $null
+.\bin\test-chat.exe *> $null
 if ($LASTEXITCODE -eq 0) {
   Write-Host "Tokens are valid" -ForegroundColor Green
 } else {
   Write-Host "Tokens are invalid or expired" -ForegroundColor Yellow
   Write-Host "Extracting fresh tokens..." -ForegroundColor Yellow
   Write-Host ""
-  npm run extract-tokens
+  .\bin\extract-tokens.exe
   Write-Host ""
   
   # Validate again after extraction
-  npm run test-chat *> $null
+  .\bin\test-chat.exe *> $null
   if ($LASTEXITCODE -ne 0) {
     Write-Host "Token validation failed. Please try again." -ForegroundColor Red
     exit 1
-  }
+  fi
   Write-Host "Tokens validated" -ForegroundColor Green
 }
 
@@ -47,7 +47,7 @@ Write-Host "===================================" -ForegroundColor Cyan
 Write-Host ""
 
 # Step 3: Run load test
-npm run load-test
+.\bin\load-test.exe
 $exitCode = $LASTEXITCODE
 
 Write-Host ""

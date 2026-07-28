@@ -1,41 +1,52 @@
 # Technical Context
 
-## Technologies Used (Current - Node.js/TypeScript)
+## Technologies Used
 
-### Runtime
+### Go Implementation (Primary - Phase 1 Complete)
+
+**Runtime:**
+- **Go**: 1.21+ (modules)
+- **rod**: v0.116.0 (browser automation)
+- **godotenv**: v1.5.0 (.env parsing)
+- **net/http**: HTTP client (standard library)
+
+**Dependencies:**
+```go
+require (
+    github.com/go-rod/rod v0.116.0    // Browser automation
+    github.com/joho/godotenv v1.5.0   // .env parsing
+)
+```
+
+**Development Tools:**
+- `go build` - Compilation
+- `go test` - Testing
+- `go vet` - Static analysis
+- `gofmt` - Formatting
+- `make` - Build automation
+
+**Binary Sizes:**
+- extract-tokens: ~14MB
+- load-test: ~7.7MB
+- test-chat: ~7.4MB
+
+### Node.js/TypeScript (Legacy - Still Functional)
+
+**Runtime:**
 - **Node.js**: v18+ (ES modules)
 - **TypeScript**: Type-safe development
 - **ts-node**: Runtime TypeScript execution
 
-### Dependencies
+**Dependencies:**
 ```json
 {
-  "playwright": "^1.x.x",      // Browser automation
-  "node-fetch": "^3.x.x",      // HTTP client
-  "typescript": "^5.x.x",      // Type checking
-  "ts-node": "^10.x.x",        // TS runtime
-  "dotenv": "^16.x.x"          // Env var loading
+  "playwright": "^1.40.0",
+  "node-fetch": "^3.3.2",
+  "dotenv": "^16.3.1",
+  "typescript": "^5.3.0",
+  "ts-node": "^10.9.2"
 }
 ```
-
-### Development Tools
-- **Playwright**: Chromium browser automation
-- **npm**: Package management
-- **Git**: Version control
-- **Semgrep**: Security scanning (SAST, secrets detection)
-
-## Planned Technologies (Go Refactor)
-
-### Runtime
-- **Go**: 1.21+ (modules)
-- **colly** or **rod**: Browser automation (alternative to Playwright)
-- **net/http**: HTTP client (standard library)
-
-### Benefits
-- Single binary deployment
-- No runtime dependencies
-- Better concurrency model (goroutines)
-- Smaller memory footprint
 
 ## Development Setup
 
@@ -85,21 +96,25 @@ totherescue/
 └── .gitignore
 ```
 
-### Planned Project Structure (Go)
+### Implemented Project Structure (Go) - Phase 1 ✅
 ```
 totherescue/
 ├── cmd/
-│   ├── extract-tokens/       # Token extraction CLI
-│   └── load-test/            # Load test CLI
+│   ├── extract-tokens/       # Token extraction CLI (rod-based)
+│   ├── load-test/            # Load test CLI (sequential)
+│   └── test-chat/            # API validation CLI
 ├── internal/
-│   ├── tokens/               # Token extraction logic
-│   ├── api/                  # API client
-│   └── questions/            # Question loader
-├── questions/                # Same question files
-├── results/                  # Test output
-├── .env.local                # Tokens
-├── go.mod
-└── go.sum
+│   ├── tokens/               # Token extraction logic (extractor.go)
+│   ├── api/                  # HTTP client (client.go + tests)
+│   ├── config/               # .env.local parsing (env.go)
+│   └── questions/            # Question loader (loader.go + tests)
+├── questions/                # Same 10 question files + index.json
+├── results/                  # Test output (gitignored)
+├── .env.local                # Tokens (gitignored)
+├── go.mod                    # Go module definition
+├── go.sum                    # Dependency checksums
+├── Makefile                  # Build/test/clean targets
+└── bin/                      # Compiled binaries (gitignored)
 ```
 
 ## Technical Constraints
@@ -121,22 +136,55 @@ totherescue/
 
 ## Tool Usage Patterns
 
-### Token Extraction
+### Go Commands (Implemented)
+
+**Token Extraction:**
 ```bash
-npm run extract-tokens
+go run cmd/extract-tokens/main.go
+# or
+./bin/extract-tokens
 # Opens browser → User logs in → Saves .env.local
 ```
 
-### Load Testing
+**API Validation:**
 ```bash
-npm run load-test
-# Uses .env.local → Runs parallel sessions → Saves results
+go run cmd/test-chat/main.go
+# or
+./bin/test-chat
+# Sends test message to verify tokens work
 ```
 
-### Orchestration
+**Load Testing:**
+```bash
+go run cmd/load-test/main.go
+# or
+./bin/load-test
+# Runs sequential questions with configured pauses
+```
+
+**Build:**
+```bash
+make build
+# Builds all binaries to bin/ directory
+```
+
+**Test:**
+```bash
+make test
+# Runs go test ./...
+```
+
+### Node.js Commands (Legacy)
+```bash
+npm run extract-tokens    # Token extraction (Playwright)
+npm run test-chat         # API validation
+npm run load-test         # Load testing
+```
+
+### Orchestration (To Update)
 ```bash
 ./scripts/run-tests.sh
-# Validates tokens → Extracts if needed → Runs test → Shows results
+# TODO: Update to use Go binaries instead of npm commands
 ```
 
 ### Security Scanning

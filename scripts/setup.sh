@@ -1,70 +1,56 @@
 #!/bin/bash
-# Setup script for SomeGPT Load Testing Toolkit
-# Installs all required dependencies
+# Setup script for SomeGPT Load Testing Toolkit (Go version)
+# Installs Go and builds binaries
 
 set -e
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+
+cd "$PROJECT_ROOT"
+
 echo "==================================="
-echo "SomeGPT Load Test - Setup"
+echo "SomeGPT Load Test - Setup (Go)"
 echo "==================================="
 echo ""
 
-# Check Node.js version
-echo "Checking Node.js version..."
-NODE_VERSION=$(node --version 2>&1 || echo "not installed")
-if [[ "$NODE_VERSION" == "not installed" ]]; then
-  echo "❌ Node.js is not installed"
-  echo "   Please install Node.js v18 or higher from https://nodejs.org/"
+# Check Go version
+echo "Checking Go version..."
+GO_VERSION=$(go version 2>&1 || echo "not installed")
+if [[ "$GO_VERSION" == "not installed" ]]; then
+  echo "Go is not installed"
+  echo "   Please install Go 1.21 or higher from https://go.dev/dl/"
   exit 1
 fi
 
-echo "✅ Node.js: $NODE_VERSION"
+echo "$GO_VERSION"
+echo ""
 
-# Check npm
-echo "Checking npm..."
-NPM_VERSION=$(npm --version 2>&1 || echo "not installed")
-if [[ "$NPM_VERSION" == "not installed" ]]; then
-  echo "❌ npm is not installed"
-  echo "   npm comes with Node.js. Please reinstall Node.js."
+# Download Go dependencies
+echo "Downloading Go dependencies..."
+go mod download
+echo "Dependencies downloaded"
+echo ""
+
+# Build binaries
+echo "Building binaries..."
+make build
+echo "Binaries built successfully"
+echo ""
+
+# Verify binaries
+echo "Verifying binaries..."
+if [ -f "bin/extract-tokens" ] && [ -f "bin/test-chat" ] && [ -f "bin/load-test" ]; then
+  echo "All binaries found in bin/"
+  ls -lh bin/
+else
+  echo "Some binaries are missing"
   exit 1
 fi
-
-echo "✅ npm: $NPM_VERSION"
 echo ""
-
-# Install Node.js dependencies
-echo "Installing Node.js dependencies..."
-npm install
-echo "✅ Dependencies installed"
-echo ""
-
-# Install Playwright browser
-echo "Installing Playwright browser (Chromium)..."
-echo "   This is a one-time download (~150MB)"
-npx playwright install chromium
-echo "✅ Playwright browser installed"
-echo ""
-
-# Check if on Linux and offer to install system dependencies
-if [[ "$OSTYPE" == "linux-gnu"* ]] && [[ ! "$OSTYPE" == "linux-musl"* ]]; then
-  echo "Detected Linux system."
-  echo "Playwright requires system dependencies to run Chromium."
-  echo ""
-  read -p "Install system dependencies now? (requires sudo) [y/N]: " -n 1 -r
-  echo ""
-  if [[ $REPLY =~ ^[Yy]$ ]]; then
-    echo "Installing system dependencies..."
-    npx playwright install-deps chromium
-    echo "✅ System dependencies installed"
-  else
-    echo "⚠️  Skipping system dependencies"
-    echo "   If browser automation fails, run: npx playwright install-deps chromium"
-  fi
-  echo ""
-fi
 
 echo "==================================="
-echo "✅ Setup complete!"
+echo "Setup complete!"
 echo "==================================="
 echo ""
 echo "Next steps:"
@@ -76,4 +62,9 @@ echo ""
 echo "  2. Tokens are saved to .env.local (gitignored, never commit!)"
 echo "     - Valid for ~1 hour"
 echo "     - Script auto-refreshes when expired"
+echo ""
+echo "  3. Or run individual commands:"
+echo "     ./bin/extract-tokens  # Extract fresh tokens"
+echo "     ./bin/test-chat       # Test API connection"
+echo "     ./bin/load-test       # Run load test"
 echo ""

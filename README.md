@@ -6,21 +6,21 @@
 
 Automated API discovery, token extraction, and load testing for SomeGPT (NCS GPT platform).
 
+**Built with Go** - Single binary deployment, no runtime dependencies.
+
 ## What This Does
 
 This toolkit helps you:
 1. **Extract fresh authentication tokens** automatically from your browser
 2. **Test the SomeGPT API** directly (no browser needed)
-3. **Run load tests** with parallel sessions to generate traffic
-4. **Scale horizontally** for sustained load testing
+3. **Run load tests** with sequential question execution
+4. **Track metrics** - response times, token usage, success rates
 
 ## Quick Start
 
 ### For First-Time Users
 
-**Option 1: Automated Setup (Recommended)**
-
-Run the setup script to install everything:
+**Run the setup script:**
 
 ```bash
 # Linux/Mac (WSL)
@@ -30,27 +30,17 @@ Run the setup script to install everything:
 .\scripts\setup.ps1
 ```
 
-**Option 2: Manual Setup**
-
-```bash
-# Install dependencies
-npm install
-
-# Install Playwright browser (one-time, ~150MB)
-npx playwright install chromium
-```
-
-**Linux only:** Install system dependencies
-```bash
-npx playwright install-deps chromium
-```
+This will:
+- Check Go installation (requires Go 1.21+)
+- Download dependencies
+- Build binaries (`bin/extract-tokens`, `bin/test-chat`, `bin/load-test`)
 
 ### Step 1: Extract Fresh Tokens
 
 Tokens expire every ~1 hour, so extract fresh ones before testing:
 
 ```bash
-npm run extract-tokens
+./bin/extract-tokens
 ```
 
 **What happens:**
@@ -62,7 +52,7 @@ npm run extract-tokens
 ### Step 2: Test API Connection
 
 ```bash
-npm run test-chat
+./bin/test-chat
 ```
 
 **Expected output:**
@@ -88,13 +78,13 @@ Automatically validates tokens and extracts fresh ones if needed:
 **Option 2: Direct Load Test**
 
 ```bash
-npm run load-test
+./bin/load-test
 ```
 
 **Default behavior:**
-- Sends 2 requests (Complexity Level 1 & 5 questions)
-- 1-minute pause between requests
-- 1 concurrent session
+- Runs all 10 questions from `questions/` directory
+- 1-minute pause between questions (configurable)
+- Sequential execution (one question at a time)
 - Saves results to `results/` folder
 
 ## Configuration
@@ -106,8 +96,8 @@ Copy `.env.example` to `.env.local` and fill in your values:
 AUTH_TOKEN=your-token-here
 API_KEY=your-api-key-here
 
-# API endpoint (REQUIRED - get from `npm run extract-tokens` or browser DevTools)
-API_ENDPOINT=https://...
+# Optional: Graph token for Email Intelligence API
+GRAPH_TOKEN=default-graph-token
 
 # Conversation ID (use existing or leave blank for auto-gen)
 CONVERSATION_ID=a6971918-50ca-455b-b822-13c780bdb05b
@@ -115,34 +105,11 @@ CONVERSATION_ID=a6971918-50ca-455b-b822-13c780bdb05b
 # Pause between prompts in minutes
 PAUSE_MINUTES=1
 
-# Number of parallel sessions
-CONCURRENT_SESSIONS=5
-
 # Test duration (0 = run once, >0 = minutes)
 DURATION_MINUTES=0
 ```
 
 ## Understanding Results
-
-### API Test Output
-
-```
-SomeGPT API Client
-====================
-
-Configuration:
-   API Endpoint: https://...
-   Cookie length: 245 chars
-   Conversation ID: test-conversation
-
-Test 1: Sending API request...
-   Endpoint: https://...
-   Status: 200 OK
-   Duration: 3245ms
-   Success!
-   Response size: 15234 bytes
-   Token usage: { prompt_tokens: 150, completion_tokens: 890, total_tokens: 1040 }
-```
 
 ### Load Test Summary
 
@@ -150,18 +117,25 @@ Test 1: Sending API request...
 SomeGPT Load Test
 ===================
 
-Load Test Summary
-====================
-Total Sessions: 5
-Total Requests: 10
-Successful: 10 (100.00%)
-Failed: 0
-Avg Response Time: 4523.45ms
-Total Tokens: 10450
-Duration: 6.23 minutes
+Sequential Test Summary
+=========================
+Questions Completed: 10/10
+Successful: 9 (90.00%)
+Failed: 1
+Avg Response Time: 313.78ms
+Total Tokens Generated: 22646
+Total Duration: 9.87 minutes
 
-Results saved to: results/load-test-2026-07-24T12-34-56.json
+Results saved to: results/load-test-2026-07-28T13-43-08-000Z.json
 ```
+
+### JSON Results
+
+Each test run saves a detailed JSON file with:
+- Per-question metrics (response time, tokens, success/failure)
+- Summary statistics
+- Full response bodies
+- Error details
 
 ## For Other Users
 
@@ -182,15 +156,15 @@ Share this repo with your team. They run:
 ```
 
 **What they need:**
-- Node.js v18+
-- ~200MB for Playwright browser
+- Go 1.21+
+- ~20MB for binaries
 - Ability to login to SomeGPT (for token extraction)
 
 **Option 2: Quick Start (You Provide Tokens)**
 
 1. Extract tokens and endpoint on your machine:
    ```bash
-   npm run extract-tokens
+   ./bin/extract-tokens
    ```
 
 2. Share `.env.local` securely (NOT via git):
@@ -200,13 +174,12 @@ Share this repo with your team. They run:
 
 3. They run:
    ```bash
-   npm install
-   npm run load-test
+   ./bin/load-test
    ```
 
 **What they need:**
-- Node.js v18+
-- No Playwright/browser dependencies
+- Go 1.21+ (or pre-built binaries)
+- No browser/Playwright dependencies
 - Fresh `.env.local` from you (hourly)
 
 ### Finding Conversation IDs
@@ -217,9 +190,9 @@ Share this repo with your team. They run:
 
 ## How to Find the API Endpoint
 
-If the API endpoint changes or you need to discover it from scratch, follow these steps:
+If the API endpoint changes or you need to discover it from scratch:
 
-### Method 1: Browser DevTools (Manual - 5 minutes)
+### Browser DevTools Method
 
 1. **Open SomeGPT in your browser**
    - Navigate to `https://ncsgpt.ncs.com.sg`
@@ -236,171 +209,148 @@ If the API endpoint changes or you need to discover it from scratch, follow thes
    - Click on the request
 
 4. **Extract the Details**
-   - **URL**: Copy the full endpoint (e.g., `https://.../orchestrator/sk-chat/stream`)
+   - **URL**: Copy the full endpoint
    - **Headers**: Note `Authorization`, `X-API-Key`, `Content-Type`
    - **Request Body**: Copy the JSON payload structure
 
-5. **Update Your Configuration**
+5. **Update Configuration**
    - Paste the new endpoint into `.env.local` as `API_ENDPOINT`
-   - Update any changed headers in the test code
-
-### Method 2: Automated Capture Script
-
-If you have the capture script configured:
-
-```bash
-npm run capture
-```
-
-This will:
-- Open a browser automatically
-- Guide you through sending a test message
-- Extract the endpoint and tokens
-- Save everything to `.env.local`
-
-### What Can Change & How to Fix
-
-| Component | How to Detect | How to Update |
-|-----------|---------------|---------------|
-| **Base URL** (domain) | Network tab shows new domain | Update `API_ENDPOINT` in `.env.local` |
-| **Path** (`/orchestrator/...`) | Different path in request | Update endpoint path |
-| **Headers** | New/missing headers in request | Update headers in `api-client.ts` or `load-test.ts` |
-| **Request Body** | JSON structure differs | Update `ChatRequest` interface in code |
-| **Authentication** | Different auth method | Re-run token extraction or update auth logic |
+   - Update any changed headers in the code
 
 ### Quick Validation
 
 After updating the endpoint:
 
 ```bash
-# Test with a single request
-npm run test-chat
+./bin/test-chat
 
-# Check for successful response
 # Expected: "✅ SUCCESS!" with response data
 ```
 
-**Note:** The automated capture method (`capture-network.ts`) is the most reliable way to keep endpoints and tokens in sync when the API changes.
+## Scaling Load Tests
 
-### Scaling Load Tests
+### For longer tests:
 
-**For 10 parallel sessions:**
-```bash
-# Edit .env.local
-CONCURRENT_SESSIONS=10
-
-# Run
-npm run load-test
-```
-
-**For sustained load (30 minutes):**
 ```bash
 # Edit .env.local
 DURATION_MINUTES=30
 
 # Run
-npm run load-test
+./bin/load-test
 ```
 
 ## Troubleshooting
 
-### "Command not found: ./scripts/run-tests.sh"
-Make sure the script is executable:
-```bash
-chmod +x scripts/run-tests.sh
-chmod +x scripts/setup.sh
-```
+### "Command not found: ./bin/extract-tokens"
 
-### "Playwright browser not found"
-Install the browser:
+Build the binaries first:
 ```bash
-npx playwright install chromium
+./scripts/setup.sh
+# or
+make build
 ```
 
 ### "HTTP 401 Unauthorized"
+
 - Tokens have expired (~1 hour lifetime)
-- Re-run `npm run extract-tokens` to get fresh tokens
+- Re-run `./bin/extract-tokens` to get fresh tokens
 - Or use the smart runner: `./scripts/run-tests.sh` (auto-refreshes tokens)
 
-### "System dependencies missing" (Linux only)
-Install Linux system libraries:
-```bash
-npx playwright install-deps chromium
-```
+### "Go not installed"
 
-### "Node.js version too old"
-Upgrade to Node.js v18 or higher:
+Install Go 1.21 or higher:
 ```bash
 # Check version
-node --version
+go version
 
-# Download from https://nodejs.org/
+# Download from https://go.dev/dl/
 ```
 
 ### Results Not Showing
+
 Check the results directory:
 ```bash
 ls -lt results/
 cat results/load-test-*.json
 ```
-- Check if cookie format is correct in `.env`
 
 ### "HTTP 429 Too Many Requests"
+
 - Rate limiting detected
 - Increase `PAUSE_MINUTES` in `.env`
-- Reduce `CONCURRENT_SESSIONS`
-
-### Tests failing but browser works
-- Check User-Agent header matches your browser
-- Ensure all required cookies are included
-- Verify Referer header format
 
 ## 📁 Project Structure
 
 ```
 totherescue/
-├── src/
-│   ├── capture-network.ts    # Network interception & cookie extraction
-│   ├── api-client.ts         # Direct API testing
-│   └── load-test.ts          # Parallel load testing
-├── results/                   # Test results (auto-created)
-├── .env                       # Configuration (auto-created)
-├── .env.example              # Template
-├── captured-api-endpoints.json # Captured API data
-├── network-traffic.har        # Full HAR file
-├── package.json
-├── tsconfig.json
+├── cmd/
+│   ├── extract-tokens/    # Token extraction CLI
+│   ├── test-chat/         # API validation CLI
+│   └── load-test/         # Load test CLI
+├── internal/
+│   ├── api/               # HTTP client
+│   ├── config/            # Configuration loader
+│   ├── questions/         # Question loader
+│   └── tokens/            # Token extractor (rod-based)
+├── questions/             # Test questions (10 files + index.json)
+├── results/               # Test results (auto-created, gitignored)
+├── bin/                   # Compiled binaries (gitignored)
+├── .env.local             # Configuration (gitignored)
+├── .env.example           # Template
+├── go.mod                 # Go module
+├── Makefile               # Build targets
 └── README.md
 ```
 
 ## 🔐 Security Notes
 
-- **Never commit `.env`** - Contains sensitive auth cookies
-- **Rotate cookies regularly** - They may expire or be revoked
+- **Never commit `.env.local`** - Contains sensitive auth cookies
+- **Rotate tokens regularly** - They expire after ~1 hour
 - **Use test conversations** - Don't use production conversation IDs
 - **Monitor rate limits** - Respect platform usage policies
 
-## 📝 Complexity Levels
+## 📝 Test Questions
 
-### Level 1 (Baseline)
-- Multi-step calculation
-- Golden ratio, primes, square roots
-- ~500-1000 tokens response
+The toolkit includes 10 pre-configured test questions:
 
-### Level 5 (Advanced)
-- 5-dimensional analysis:
-  1. Matrix determinant
-  2. Fibonacci positioning
-  3. Prime factorization chain
-  4. Temporal calculations
-  5. Chaos theory (logistic map)
-- ~2000-5000+ tokens response
+1. Email Summary (Complexity 1)
+2. Unread Mails (Complexity 1)
+3. High Priority Mails (Complexity 2)
+4. System Alert Mails (Complexity 2)
+5. System Alert Mails Chart (Complexity 3)
+6. External Emails (Complexity 2)
+7. Emails with Attachments (Complexity 2)
+8. Sender Search (Complexity 2)
+9. Keyword Search (Complexity 2)
+10. Unread High Priority (Complexity 3)
 
-## 🎓 Learning Resources
+Questions are loaded from `questions/index.json` and executed sequentially.
 
-- [Playwright Network Interception](https://playwright.dev/docs/network)
-- [Node.js Fetch API](https://github.com/node-fetch/node-fetch)
-- [Load Testing Best Practices](https://k6.io/docs/)
+## 🎓 Technical Details
+
+### Go Dependencies
+
+```go
+require (
+    github.com/go-rod/rod v0.116.0    // Browser automation
+    github.com/joho/godotenv v1.5.0   // .env parsing
+)
+```
+
+### Binary Sizes
+
+- `extract-tokens`: ~14MB
+- `test-chat`: ~7.4MB
+- `load-test`: ~7.7MB
+
+### Build Commands
+
+```bash
+make build      # Build all binaries
+make test       # Run unit tests
+make vet        # Run go vet
+make clean      # Remove binaries
+```
 
 ## 📄 License
 
@@ -416,4 +366,5 @@ MIT
 ---
 
 **Built for:** SomeGPT Load Testing & API Exploration  
-**Last Updated:** 2026-07-24
+**Language:** Go 1.21+  
+**Last Updated:** 2026-07-28

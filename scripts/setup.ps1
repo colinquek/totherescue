@@ -1,50 +1,53 @@
-# Setup script for SomeGPT Load Testing Toolkit (PowerShell)
-# Installs all required dependencies
+# Setup script for SomeGPT Load Testing Toolkit (PowerShell, Go version)
+# Installs Go dependencies and builds binaries
 
 Write-Host "===================================" -ForegroundColor Cyan
-Write-Host "SomeGPT Load Test - Setup" -ForegroundColor Cyan
+Write-Host "SomeGPT Load Test - Setup (Go)" -ForegroundColor Cyan
 Write-Host "===================================" -ForegroundColor Cyan
 Write-Host ""
 
-# Check Node.js version
-Write-Host "Checking Node.js version..."
+# Check Go version
+Write-Host "Checking Go version..."
 try {
-  $nodeVersion = node --version
-  Write-Host "✅ Node.js: $nodeVersion" -ForegroundColor Green
+  $goVersion = go version
+  Write-Host "$goVersion" -ForegroundColor Green
 } catch {
-  Write-Host "❌ Node.js is not installed" -ForegroundColor Red
-  Write-Host "   Please install Node.js v18 or higher from https://nodejs.org/"
-  exit 1
-}
-
-# Check npm
-Write-Host "Checking npm..."
-try {
-  $npmVersion = npm --version
-  Write-Host "✅ npm: $npmVersion" -ForegroundColor Green
-} catch {
-  Write-Host "❌ npm is not installed" -ForegroundColor Red
-  Write-Host "   npm comes with Node.js. Please reinstall Node.js."
+  Write-Host "Go is not installed" -ForegroundColor Red
+  Write-Host "   Please install Go 1.21 or higher from https://go.dev/dl/"
   exit 1
 }
 
 Write-Host ""
 
-# Install Node.js dependencies
-Write-Host "Installing Node.js dependencies..."
-npm install
-Write-Host "✅ Dependencies installed" -ForegroundColor Green
+# Download Go dependencies
+Write-Host "Downloading Go dependencies..."
+go mod download
+Write-Host "Dependencies downloaded" -ForegroundColor Green
 Write-Host ""
 
-# Install Playwright browser
-Write-Host "Installing Playwright browser (Chromium)..."
-Write-Host "   This is a one-time download (~150MB)"
-npx playwright install chromium
-Write-Host "✅ Playwright browser installed" -ForegroundColor Green
+# Build binaries
+Write-Host "Building binaries..."
+$env:GOOS = "windows"
+$env:GOARCH = "amd64"
+go build -o bin/extract-tokens.exe ./cmd/extract-tokens
+go build -o bin/test-chat.exe ./cmd/test-chat
+go build -o bin/load-test.exe ./cmd/load-test
+Write-Host "Binaries built successfully" -ForegroundColor Green
+Write-Host ""
+
+# Verify binaries
+Write-Host "Verifying binaries..."
+if ((Test-Path "bin\extract-tokens.exe") -and (Test-Path "bin\test-chat.exe") -and (Test-Path "bin\load-test.exe")) {
+  Write-Host "All binaries found in bin/" -ForegroundColor Green
+  Get-ChildItem bin\*.exe | Format-Table Name, Length
+} else {
+  Write-Host "Some binaries are missing" -ForegroundColor Red
+  exit 1
+}
 Write-Host ""
 
 Write-Host "===================================" -ForegroundColor Cyan
-Write-Host "✅ Setup complete!" -ForegroundColor Green
+Write-Host "Setup complete!" -ForegroundColor Green
 Write-Host "===================================" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "Next steps:"
@@ -56,4 +59,9 @@ Write-Host ""
 Write-Host "  2. Tokens are saved to .env.local (gitignored, never commit!)" -ForegroundColor Yellow
 Write-Host "     - Valid for ~1 hour"
 Write-Host "     - Script auto-refreshes when expired"
+Write-Host ""
+Write-Host "  3. Or run individual commands:"
+Write-Host "     .\bin\extract-tokens.exe  # Extract fresh tokens"
+Write-Host "     .\bin\test-chat.exe       # Test API connection"
+Write-Host "     .\bin\load-test.exe       # Run load test"
 Write-Host ""

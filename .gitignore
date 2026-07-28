@@ -1,6 +1,11 @@
-# Dependencies
-node_modules/
-dist/
+# Go binaries
+bin/
+*.exe
+
+# Go build artifacts
+*.test
+*.out
+coverage.out
 
 # Environment and tokens
 .env
