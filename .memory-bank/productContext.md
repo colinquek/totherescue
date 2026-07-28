@@ -1,12 +1,12 @@
 ## Problem Statement
 
-SomeGPT platform needs load testing to:
+SomeGPT platform needs email querying to:
 - Validate API performance under concurrent user load
 - Generate realistic traffic patterns for monitoring
 - Test system behavior with sustained usage
 - Measure token consumption and response times
 
-Manual load testing is impractical because:
+Manual email querying is impractical because:
 - Tokens expire every ~1 hour (requires re-authentication)
 - Browser-based testing doesn't scale (one browser = one session)
 - Manual API calls are error-prone (complex request format)
@@ -31,7 +31,7 @@ Manual load testing is impractical because:
 **Option B: Share tokens securely**
 - One user extracts tokens
 - Share `.env.local` via secure channel (NOT git)
-- Team runs load tests immediately (no browser needed)
+- Team runs email querys immediately (no browser needed)
 
 ## User Experience Goals
 
@@ -45,11 +45,11 @@ Manual load testing is impractical because:
 
 ### Token Lifecycle Management
 - **Extraction:** Playwright captures headers from browser session
-- **Validation:** Test API call before running load test
+- **Validation:** Test API call before running email query
 - **Auto-refresh:** Detect 401, re-extract tokens automatically
 - **Storage:** `.env.local` (gitignored, local only)
 
-### Load Testing Configuration
+### Email Query Configuration
 - **Concurrency:** Configurable parallel sessions (default: 1)
 - **Pause duration:** Configurable delay between requests (default: 1 minute)
 - **Duration:** Single run or sustained testing (configurable minutes)

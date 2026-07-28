@@ -154,7 +154,7 @@ go run cmd/test-chat/main.go
 # Sends test message to verify tokens work
 ```
 
-**Load Testing:**
+**Email Query:**
 ```bash
 go run cmd/load-test/main.go
 # or

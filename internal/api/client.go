@@ -157,7 +157,7 @@ func (c *Client) SendRequest(ctx context.Context, message string, sessionID stri
 			ExpertsWithRBAC: ExpertsWithRBAC{
 				Names:    []string{},
 				HashTime: time.Now().UTC().Format(time.RFC3339),
-				Hash:     "load-test",
+				Hash:     "email-query",
 			},
 			Memory: Memory{
 				UserID:    "5db3ed13-73b5-4f93-8ce1-2fa7701888e7",

@@ -2,9 +2,9 @@
   <img src="totherescue.png" alt="totherescue" width="256" height="256" />
 </div>
 
-# SomeGPT Load Testing Toolkit
+# MailSage - Email Best Practice Prompter
 
-Automated API discovery, token extraction, and load testing for SomeGPT (NCS GPT platform).
+Automated API discovery, token extraction, and email querying for SomeGPT (NCS GPT platform).
 
 **Built with Go** - Single binary deployment, no runtime dependencies.
 
@@ -13,7 +13,7 @@ Automated API discovery, token extraction, and load testing for SomeGPT (NCS GPT
 This toolkit helps you:
 1. **Extract fresh authentication tokens** automatically from your browser
 2. **Test the SomeGPT API** directly (no browser needed)
-3. **Run load tests** with sequential question execution
+3. **Run email queries** with sequential question execution
 4. **Track metrics** - response times, token usage, success rates
 
 ## Quick Start
@@ -33,7 +33,7 @@ This toolkit helps you:
 This will:
 - Check Go installation (requires Go 1.21+)
 - Download dependencies
-- Build binaries (`bin/extract-tokens`, `bin/test-chat`, `bin/load-test`)
+- Build binaries (`bin/extract-tokens`, `bin/test-chat`, `bin/run-queries`)
 
 ### Step 1: Extract Fresh Tokens
 
@@ -61,7 +61,7 @@ Tokens expire every ~1 hour, so extract fresh ones before testing:
 Response: data: [bot] Hello...
 ```
 
-### Step 3: Run Load Test
+### Step 3: Run Email Queries
 
 **Option 1: Smart Runner (Recommended)**
 
@@ -75,10 +75,10 @@ Automatically validates tokens and extracts fresh ones if needed:
 .\scripts\run-tests.ps1
 ```
 
-**Option 2: Direct Load Test**
+**Option 2: Direct Email Query**
 
 ```bash
-./bin/load-test
+./bin/run-queries
 ```
 
 **Default behavior:**
@@ -111,10 +111,10 @@ DURATION_MINUTES=0
 
 ## Understanding Results
 
-### Load Test Summary
+### Email Query Summary
 
 ```
-SomeGPT Load Test
+MailSage
 ===================
 
 Sequential Test Summary
@@ -126,7 +126,7 @@ Avg Response Time: 313.78ms
 Total Tokens Generated: 22646
 Total Duration: 9.87 minutes
 
-Results saved to: results/load-test-2026-07-28T13-43-08-000Z.json
+Results saved to: results/run-queries-2026-07-28T13-43-08-000Z.json
 ```
 
 ### JSON Results
@@ -139,7 +139,7 @@ Each test run saves a detailed JSON file with:
 
 ## For Other Users
 
-### Sharing Load Tests with Your Team
+### Sharing Email Queries with Your Team
 
 **Option 1: Full Setup (They Extract Their Own Tokens)**
 
@@ -174,7 +174,7 @@ Share this repo with your team. They run:
 
 3. They run:
    ```bash
-   ./bin/load-test
+   ./bin/run-queries
    ```
 
 **What they need:**
@@ -227,7 +227,7 @@ After updating the endpoint:
 # Expected: "✅ SUCCESS!" with response data
 ```
 
-## Scaling Load Tests
+## Scaling Email Queries
 
 ### For longer tests:
 
@@ -236,7 +236,7 @@ After updating the endpoint:
 DURATION_MINUTES=30
 
 # Run
-./bin/load-test
+./bin/run-queries
 ```
 
 ## Troubleshooting
@@ -271,7 +271,7 @@ go version
 Check the results directory:
 ```bash
 ls -lt results/
-cat results/load-test-*.json
+cat results/run-queries-*.json
 ```
 
 ### "HTTP 429 Too Many Requests"
@@ -286,7 +286,7 @@ totherescue/
 ├── cmd/
 │   ├── extract-tokens/    # Token extraction CLI
 │   ├── test-chat/         # API validation CLI
-│   └── load-test/         # Load test CLI
+│   └── run-queries/         # Load test CLI
 ├── internal/
 │   ├── api/               # HTTP client
 │   ├── config/            # Configuration loader
@@ -341,7 +341,7 @@ require (
 
 - `extract-tokens`: ~14MB
 - `test-chat`: ~7.4MB
-- `load-test`: ~7.7MB
+- `run-queries`: ~7.7MB
 
 ### Build Commands
 
@@ -365,6 +365,6 @@ MIT
 
 ---
 
-**Built for:** SomeGPT Load Testing & API Exploration  
+**Built for:** MailSage Email Query & API Exploration  
 **Language:** Go 1.21+  
 **Last Updated:** 2026-07-28

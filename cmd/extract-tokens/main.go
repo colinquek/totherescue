@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	fmt.Println("SomeGPT Token Extractor")
+	fmt.Println("MailSage Token Extractor")
 	fmt.Print("=========================\n")
 
 	extractor := tokens.NewExtractor()
@@ -37,7 +37,7 @@ func main() {
 	fmt.Print("\nSetup Complete!\n")
 	fmt.Println("Next Steps:")
 	fmt.Println("   1. Run: go run cmd/test-chat/main.go  (to verify tokens work)")
-	fmt.Println("   2. Run: go run cmd/load-test/main.go  (to start load testing)")
+	fmt.Println("   2. Run: go run cmd/run-queries/main.go  (to start load testing)")
 	fmt.Println("\nImportant:")
 	fmt.Println("   - Tokens expire after ~1 hour")
 	fmt.Println("   - Re-run this script to get fresh tokens")

@@ -98,7 +98,7 @@
 ### Concurrency
 - **Initial**: Single session only
 - **Evolved to**: Configurable parallel sessions
-- **Why**: Scalability for larger load tests
+- **Why**: Scalability for larger email querys
 
 ### Execution Mode
 - **Initial**: Parallel sessions

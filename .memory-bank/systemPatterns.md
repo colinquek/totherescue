@@ -70,7 +70,7 @@
   - Check for `.env.local`
   - Validate tokens with test API call
   - Auto-extract if expired
-  - Run load test
+  - Run email query
   - Display results
 
 ## Component Relationships
@@ -88,7 +88,7 @@ run-tests.sh → load-test.ts → results/*.json
 ```
 1. Check if .env.local exists
 2. If yes: Run test-chat (API call)
-3. If 200 OK: Proceed with load test
+3. If 200 OK: Proceed with email query
 4. If 401 Unauthorized: Re-run extract-tokens
 5. Validate again, then proceed
 ```

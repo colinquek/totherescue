@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	fmt.Println("SomeGPT Chat API Client")
+	fmt.Println("MailSage API Client")
 	fmt.Print("=========================\n")
 
 	cfg, err := config.Load()
@@ -82,7 +82,7 @@ func main() {
 
 	fmt.Println("\n\nNext Steps:")
 	fmt.Println("   - If successful, you can now use this for load testing")
-	fmt.Print("   - Run: go run cmd/load-test/main.go\n")
+	fmt.Print("   - Run: go run cmd/run-queries/main.go\n")
 }
 
 func truncate(s string, maxLen int) string {

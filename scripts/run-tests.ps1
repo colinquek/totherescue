@@ -1,5 +1,5 @@
-# Run SomeGPT load tests with automatic token validation (PowerShell)
-# Checks token validity, extracts fresh tokens if needed, then runs load test
+# Run SomeGPT email querys with automatic token validation (PowerShell)
+# Checks token validity, extracts fresh tokens if needed, then runs email query
 
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $ProjectRoot = Split-Path -Parent $ScriptDir
@@ -7,7 +7,7 @@ $ProjectRoot = Split-Path -Parent $ScriptDir
 Set-Location $ProjectRoot
 
 Write-Host "===================================" -ForegroundColor Cyan
-Write-Host "SomeGPT Load Test Runner" -ForegroundColor Cyan
+Write-Host "MailSage Email Query Runner" -ForegroundColor Cyan
 Write-Host "===================================" -ForegroundColor Cyan
 Write-Host ""
 
@@ -42,12 +42,12 @@ if ($LASTEXITCODE -eq 0) {
 
 Write-Host ""
 Write-Host "===================================" -ForegroundColor Cyan
-Write-Host "Starting Load Test" -ForegroundColor Cyan
+Write-Host "Starting Email Query" -ForegroundColor Cyan
 Write-Host "===================================" -ForegroundColor Cyan
 Write-Host ""
 
-# Step 3: Run load test
-.\bin\load-test.exe
+# Step 3: Run email query
+.\bin\run-queries.exe
 $exitCode = $LASTEXITCODE
 
 Write-Host ""

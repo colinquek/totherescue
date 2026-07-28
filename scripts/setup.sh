@@ -1,5 +1,5 @@
 #!/bin/bash
-# Setup script for SomeGPT Load Testing Toolkit (Go version)
+# Setup script for MailSage Email Querying Toolkit (Go version)
 # Installs Go and builds binaries
 
 set -e
@@ -10,7 +10,7 @@ PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 cd "$PROJECT_ROOT"
 
 echo "==================================="
-echo "SomeGPT Load Test - Setup (Go)"
+echo "MailSage Email Query - Setup (Go)"
 echo "==================================="
 echo ""
 
@@ -40,7 +40,7 @@ echo ""
 
 # Verify binaries
 echo "Verifying binaries..."
-if [ -f "bin/extract-tokens" ] && [ -f "bin/test-chat" ] && [ -f "bin/load-test" ]; then
+if [ -f "bin/extract-tokens" ] && [ -f "bin/test-chat" ] && [ -f "bin/run-queries" ]; then
   echo "All binaries found in bin/"
   ls -lh bin/
 else
@@ -54,10 +54,10 @@ echo "Setup complete!"
 echo "==================================="
 echo ""
 echo "Next steps:"
-echo "  1. Run './scripts/run-tests.sh' to start load testing"
+echo "  1. Run './scripts/run-tests.sh' to start email querying"
 echo "     - Automatically extracts tokens (opens browser)"
 echo "     - You login to SomeGPT once"
-echo "     - Runs load test with fresh tokens"
+echo "     - Runs email query with fresh tokens"
 echo ""
 echo "  2. Tokens are saved to .env.local (gitignored, never commit!)"
 echo "     - Valid for ~1 hour"
@@ -66,5 +66,5 @@ echo ""
 echo "  3. Or run individual commands:"
 echo "     ./bin/extract-tokens  # Extract fresh tokens"
 echo "     ./bin/test-chat       # Test API connection"
-echo "     ./bin/load-test       # Run load test"
+echo "     ./bin/run-queries       # Run email query"
 echo ""

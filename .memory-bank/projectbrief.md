@@ -1,6 +1,6 @@
 ## Project Overview
 
-**Purpose:** Automated load testing toolkit for SomeGPT (NCS GPT platform) enabling API discovery, token extraction, and scalable load generation for traffic testing.
+**Purpose:** Automated email query toolkit for SomeGPT (NCS GPT platform) enabling API discovery, token extraction, and scalable load generation for traffic testing.
 
 **Target System:** https://ncsgpt.ncs.com.sg/
 
@@ -11,7 +11,7 @@
 ## Goals
 
 1. **Token Management:** Automatic extraction and validation of JWT tokens from browser sessions
-2. **Load Testing:** Parallel session support with configurable concurrency and pause duration
+2. **Email Query:** Parallel session support with configurable concurrency and pause duration
 3. **Metrics Collection:** Response time, success rate, and token usage tracking
 4. **Team Collaboration:** Cross-platform scripts for easy onboarding and Git-safe configuration
 
@@ -19,7 +19,7 @@
 
 ### In Scope
 - Automated token extraction via Playwright browser automation
-- Direct API load testing (no browser overhead during tests)
+- Direct API email querying (no browser overhead during tests)
 - Automatic token validation and refresh on expiration (auto re-extraction on 401)
 - Cross-platform automation scripts (Windows, Mac, Linux)
 - Results storage and analysis (JSON format)

@@ -56,7 +56,7 @@ const systemPrompt = `IMPORTANT INSTRUCTIONS:
 Remember: Think deeply, verify thoroughly, but present only your final answer.`
 
 func main() {
-	fmt.Println("SomeGPT Load Test")
+	fmt.Println("MailSage Email Query")
 	fmt.Print("===================\n")
 
 	cfg, err := config.Load()
@@ -132,7 +132,7 @@ func main() {
 	results.Summary.TotalTokens = metrics.TotalTokens
 
 	timestamp := startTime.Format("2006-01-02T15-04-05-000Z")
-	resultsFile := filepath.Join(resultsDir, fmt.Sprintf("load-test-%s.json", timestamp))
+	resultsFile := filepath.Join(resultsDir, fmt.Sprintf("run-queries-%s.json", timestamp))
 
 	resultsJSON, err := json.MarshalIndent(results, "", "  ")
 	if err != nil {
@@ -169,7 +169,7 @@ func main() {
 	fmt.Print("Load test complete!\n")
 	fmt.Println("To run again with fresh tokens:")
 	fmt.Println("   go run cmd/extract-tokens/main.go  # Get fresh tokens")
-	fmt.Print("   go run cmd/load-test/main.go       # Run load test\n")
+	fmt.Print("   go run cmd/run-queries/main.go       # Run load test\n")
 }
 
 func runSession(cfg *config.Config, questions []string, sessionID string, stopSignal *bool) TestMetrics {

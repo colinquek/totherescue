@@ -3,7 +3,7 @@
 build:
 	go build -o bin/extract-tokens ./cmd/extract-tokens
 	go build -o bin/test-chat ./cmd/test-chat
-	go build -o bin/load-test ./cmd/load-test
+	go build -o bin/run-queries ./cmd/run-queries
 
 test:
 	go test ./...
@@ -22,7 +22,7 @@ run-test:
 	go run cmd/test-chat/main.go
 
 run-load:
-	go run cmd/load-test/main.go
+	go run cmd/run-queries/main.go
 
 install: build
 	cp bin/* $(GOPATH)/bin/ 2>/dev/null || cp bin/* ~/go/bin/

@@ -1,6 +1,6 @@
 #!/bin/bash
-# Run SomeGPT load tests with automatic token validation
-# Checks token validity, extracts fresh tokens if needed, then runs load test
+# Run SomeGPT email querys with automatic token validation
+# Checks token validity, extracts fresh tokens if needed, then runs email query
 
 set -e
 
@@ -10,7 +10,7 @@ PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 cd "$PROJECT_ROOT"
 
 echo "==================================="
-echo "SomeGPT Load Test Runner"
+echo "MailSage Email Query Runner"
 echo "==================================="
 echo ""
 
@@ -47,8 +47,8 @@ echo "Starting Load Test"
 echo "==================================="
 echo ""
 
-# Step 3: Run load test
-./bin/load-test
+# Step 3: Run email query
+./bin/run-queries
 
 EXIT_CODE=$?
 

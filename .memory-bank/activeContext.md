@@ -8,7 +8,7 @@
 
 ### Completed Features (Go Implementation)
 - ✅ Token extraction via rod (browser automation)
-- ✅ Direct API load testing (HTTP client)
+- ✅ Direct API email querying (HTTP client)
 - ✅ Automatic token validation and refresh (401 detection + auto re-extraction)
 - ✅ Sequential question execution (all 10 questions in order)
 - ✅ Cross-platform scripts (bash + PowerShell)
