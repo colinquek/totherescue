@@ -6,69 +6,6 @@
       "name": "Basic Addition",
       "complexity": 1,
       "description": "Simple two-digit addition with working"
-    },
-    {
-      "id": "complexity-2",
-      "file": "02-complexity-2.txt",
-      "name": "Percentage Discount",
-      "complexity": 2,
-      "description": "Basic percentage calculation with real-world context"
-    },
-    {
-      "id": "complexity-3",
-      "file": "03-complexity-3.txt",
-      "name": "Circle Area",
-      "complexity": 3,
-      "description": "Geometry formula application with π"
-    },
-    {
-      "id": "complexity-4",
-      "file": "04-complexity-4.txt",
-      "name": "System of Equations",
-      "complexity": 4,
-      "description": "Two-variable linear equations with verification"
-    },
-    {
-      "id": "complexity-5",
-      "file": "05-complexity-5.txt",
-      "name": "Order of Operations",
-      "complexity": 5,
-      "description": "Multi-step arithmetic with PEMDAS, square roots"
-    },
-    {
-      "id": "complexity-6",
-      "file": "06-complexity-6.txt",
-      "name": "Average Speed",
-      "complexity": 6,
-      "description": "Counterintuitive harmonic mean problem"
-    },
-    {
-      "id": "complexity-7",
-      "file": "07-complexity-7.txt",
-      "name": "Logic Puzzle",
-      "complexity": 7,
-      "description": "12 coins problem with optimal weighing strategy"
-    },
-    {
-      "id": "complexity-8",
-      "file": "08-complexity-8.txt",
-      "name": "Birthday Paradox",
-      "complexity": 8,
-      "description": "Probability with complement method (23 people)"
-    },
-    {
-      "id": "complexity-9",
-      "file": "09-complexity-9.txt",
-      "name": "Dynamic Programming",
-      "complexity": 9,
-      "description": "Longest increasing subsequence O(n²) and O(n log n)"
-    },
-    {
-      "id": "complexity-10",
-      "file": "10-complexity-10.txt",
-      "name": "Quantum Entanglement",
-      "complexity": 10,
-      "description": "Bell state, Hadamard gates, measurement correlation"
     }
   ]
 }

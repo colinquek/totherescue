@@ -58,7 +58,7 @@ if (!CONVERSATION_ID) {
 }
 
 // Hardcoded API endpoint
-const API_ENDPOINT = 'https://ncsgptapimiddlewareprod.victoriousglacier-6d23f7bf.southeastasia.azurecontainerapps.io/orchestrator/sk-chat/stream';
+const API_ENDPOINT = 'https://ncsgptapimiddlewareprod.victoriousglacier-6d23f7bf.southeastasia.azurecontainerapps.io/msagents/api/v1/email-intelligence';
 
 interface TestMetrics {
   sessionId: string;
@@ -191,8 +191,11 @@ async function sendChatRequest(
         memory: {
           user_id: '5db3ed13-73b5-4f93-8ce1-2fa7701888e7',
           session_id: `${CONVERSATION_ID}-${sessionId}`
-        }
-      }
+        },
+        graph_token: 'default-graph-token'
+      },
+      graph_token: 'default-graph-token',
+      query: message
     };
     
     const response = await fetch(API_ENDPOINT, {
@@ -275,20 +278,29 @@ async function runSession(
   
   console.log(`\n🚀 Sequential Test Session Started`);
   console.log(`   Total questions: ${questions.length}`);
-  console.log(`   Pause between questions: ${PAUSE_MINUTES} minutes\n`);
+  console.log(`   Pause between questions: ${PAUSE_MINUTES} minutes`);
+  console.log(`   Duration: ${DURATION_MINUTES === 0 ? 'Run once' : `${DURATION_MINUTES} minutes`}\n`);
   
   let iteration = 0;
+  const startTime = Date.now();
   
-  // Run through all questions sequentially
-  const totalQuestions = questions.length;
-  
-  while (iteration < totalQuestions && !stopSignal.stopped) {
+  // Run until duration exceeded or stopped
+  while (!stopSignal.stopped) {
+    // Check if duration exceeded
+    if (DURATION_MINUTES > 0) {
+      const elapsedMinutes = (Date.now() - startTime) / 60000;
+      if (elapsedMinutes >= DURATION_MINUTES) {
+        console.log(`\n⏱️  Duration exceeded (${DURATION_MINUTES} minutes). Stopping...`);
+        break;
+      }
+    }
+    
     const questionIndex = iteration % questions.length;
     const question = questions[questionIndex];
     iteration++;
     
-    console.log(`\n📤 Question ${iteration}/${totalQuestions} (Complexity ${questionIndex + 1}):`);
-    console.log(`   ${questions[questionIndex]}`);
+    console.log(`\n📤 Request ${iteration}:`);
+    console.log(`   ${question}`);
     console.log(`\n   Sending request...`);
     
     const result = await sendChatRequest(question, sessionId);
@@ -313,34 +325,28 @@ async function runSession(
     
     console.log(`   ${result.success ? '✅' : '❌'} ${result.responseTime}ms${result.tokens ? ` | ${result.tokens} tokens` : ''}`);
     
-    if (result.error) {
-      console.log(`   Error: ${result.error}`);
-    } else if (result.response) {
-      // Display full response
+    // Log response if not completed
+    if (result.response && !result.response.includes('-=COMPLETED=-')) {
       console.log(`\n   📝 Response:`);
-      const responseLines = result.response.split('\n').slice(0, 50); // Show first 50 lines
+      const responseLines = result.response.split('\n').slice(0, 50);
       responseLines.forEach(line => {
         console.log(`      ${line}`);
       });
       if (result.response.split('\n').length > 50) {
-        console.log(`      ... (response truncated, ${result.response.split('\n').length - 50} more lines)`);
+        console.log(`      ... (response truncated)`);
       }
       console.log('');
+    } else if (result.response && result.response.includes('-=COMPLETED=-')) {
+      console.log(`   ⏹️  -=COMPLETED=- detected\n`);
+      break; // Exit immediately when completion detected
     }
     
-    // Check if we've completed all questions
-    if (iteration >= totalQuestions) {
-      console.log(`\n✅ Completed all ${totalQuestions} questions!\n`);
-      break;
-    }
-    
-    // Wait before next question (minimum 3 minutes)
+    // Wait before next question
     if (!stopSignal.stopped) {
       const pauseMs = PAUSE_MINUTES * 60000;
-      console.log(`\n⏳ Pausing for ${PAUSE_MINUTES} minutes before next question...`);
-      console.log(`   Next question at: ${new Date(Date.now() + pauseMs).toLocaleTimeString()}\n`);
+      console.log(`\n⏳ Pausing for ${PAUSE_MINUTES} minutes...`);
+      console.log(`   Next request at: ${new Date(Date.now() + pauseMs).toLocaleTimeString()}\n`);
       
-      // Wait with ability to stop
       await new Promise<void>(resolve => {
         const interval = setInterval(() => {
           if (stopSignal.stopped) {
@@ -358,9 +364,9 @@ async function runSession(
   }
   
   metrics.endTime = Date.now();
-    const durationMinutes = ((metrics.endTime - metrics.startTime) / 60000).toFixed(2);
-    console.log(`\n🏁 Sequential test completed: ${metrics.successfulRequests}/${metrics.totalRequests} successful`);
-    console.log(`   Total duration: ${durationMinutes} minutes\n`);
+  const durationMinutes = ((metrics.endTime - metrics.startTime) / 60000).toFixed(2);
+  console.log(`\n🏁 Sequential test completed: ${metrics.successfulRequests}/${metrics.totalRequests} successful`);
+  console.log(`   Total duration: ${durationMinutes} minutes\n`);
   return metrics;
 }
 
@@ -435,7 +441,7 @@ async function main(): Promise<void> {
     console.log(`\n📁 Results saved to: ${resultsFile}\n`);
     
     // Check for errors
-    const allErrors = metrics.flatMap(m => m.errors);
+    const allErrors = metrics.errors || [];
     if (allErrors.length > 0) {
       console.log('⚠️  Errors encountered:');
       allErrors.forEach((error, i) => {

@@ -28,7 +28,7 @@ const AUTH_TOKEN = authMatch[1].trim();
 const API_KEY = apiKeyMatch[1].trim();
 
 // Hardcoded API endpoint
-const API_ENDPOINT = 'https://ncsgptapimiddlewareprod.victoriousglacier-6d23f7bf.southeastasia.azurecontainerapps.io/orchestrator/sk-chat/stream';
+const API_ENDPOINT = 'https://ncsgptapimiddlewareprod.victoriousglacier-6d23f7bf.southeastasia.azurecontainerapps.io/msagents/api/v1/email-intelligence';
 
 const httpsAgent = new https.Agent({
   rejectUnauthorized: false
@@ -58,8 +58,11 @@ async function testAPI(): Promise<void> {
       memory: {
         user_id: '5db3ed13-73b5-4f93-8ce1-2fa7701888e7',
         session_id: 'a6971918-50ca-455b-b822-13c780bdb05b'
-      }
-    }
+      },
+      graph_token: 'default-graph-token'
+    },
+    graph_token: 'default-graph-token',
+    query: 'Hello from API test!'
   };
   
   const headers = {

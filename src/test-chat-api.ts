@@ -43,11 +43,12 @@ if (!authMatch || !apiKeyMatch) {
   process.exit(1);
 }
 
-const AUTH_TOKEN = authMatch[1].trim();
+  const AUTH_TOKEN = authMatch[1].trim();
 const API_KEY = apiKeyMatch[1].trim();
 let CONVERSATION_ID = convMatch ? convMatch[1].trim() : '';
+const GRAPH_TOKEN = envContent.match(/^GRAPH_TOKEN=(.+)$/m)?.[1].trim() || '';
 // Hardcoded API endpoint
-const API_ENDPOINT = 'https://ncsgptapimiddlewareprod.victoriousglacier-6d23f7bf.southeastasia.azurecontainerapps.io/orchestrator/sk-chat/stream';
+const API_ENDPOINT = 'https://ncsgptapimiddlewareprod.victoriousglacier-6d23f7bf.southeastasia.azurecontainerapps.io/msagents/api/v1/email-intelligence';
 
 if (!CONVERSATION_ID) {
   CONVERSATION_ID = randomUUID();
@@ -101,7 +102,7 @@ interface ChatConfig {
     user_id: string;
     session_id: string;
   };
-  graph_token?: string;
+  graph_token: string;
   reference_id?: string;
 }
 
@@ -109,6 +110,8 @@ interface ChatRequest {
   message: TextItem[][];
   history: MessageItem[];
   config: ChatConfig;
+  graph_token: string;
+  query: string;
 }
 
 async function sendChatMessage(message: string): Promise<void> {
@@ -148,8 +151,11 @@ async function sendChatMessage(message: string): Promise<void> {
       memory: {
         user_id: '5db3ed13-73b5-4f93-8ce1-2fa7701888e7',
         session_id: CONVERSATION_ID
-      }
-    }
+      },
+      graph_token: GRAPH_TOKEN || 'default-graph-token'
+    },
+    graph_token: GRAPH_TOKEN || 'default-graph-token',
+    query: message
   };
   
   console.log('Request body:', JSON.stringify(requestBody, null, 2));
