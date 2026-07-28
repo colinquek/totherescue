@@ -4,7 +4,9 @@
 
 **Target System:** https://ncsgpt.ncs.com.sg/
 
-**Test Focus:** Direct API calls with JWT token authentication, parallel session support, and automated token lifecycle management.
+**Test Focus:** Direct API calls with JWT token authentication, sequential question execution, automated token lifecycle management, and completion detection.
+
+**Current API:** Email Intelligence endpoint (`/msagents/api/v1/email-intelligence`)
 
 ## Goals
 
@@ -18,10 +20,12 @@
 ### In Scope
 - Automated token extraction via Playwright browser automation
 - Direct API load testing (no browser overhead during tests)
-- Automatic token validation and refresh on expiration
+- Automatic token validation and refresh on expiration (auto re-extraction on 401)
 - Cross-platform automation scripts (Windows, Mac, Linux)
 - Results storage and analysis (JSON format)
 - Team-friendly workflows (setup + run scripts)
+- Sequential question execution with configurable pause duration
+- Completion detection via `-=COMPLETED=-` keyword
 
 ### Out of Scope
 - Containerization (Docker) - deferred for simplicity
@@ -45,3 +49,4 @@
 - Azure AD MFA blocks automated login (manual step required)
 - API requires dual headers: Authorization + X-API-Key
 - Nested request format: `message: [[{type, text}]]`
+- Email Intelligence API requires `graph_token` field in request body

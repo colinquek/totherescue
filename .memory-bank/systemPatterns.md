@@ -11,7 +11,7 @@
                           ↓
 ┌─────────────────────────────────────────────────────────┐
 │  Token Storage (.env.local)                             │
-│  - AUTH_TOKEN, API_KEY, CONVERSATION_ID                 │
+│  - AUTH_TOKEN, API_KEY, GRAPH_TOKEN                     │
 │  - Gitignored, never committed                          │
 │  - Valid for ~1 hour                                    │
 └─────────────────────────────────────────────────────────┘
@@ -19,9 +19,11 @@
 ┌─────────────────────────────────────────────────────────┐
 │  Load Test Runner (load-test.ts)                        │
 │  - Reads tokens from .env.local                         │
-│  - Parallel session support                             │
+│  - Sequential question execution                        │
+│  - Auto token refresh on 401                            │
 │  - Makes direct API calls (no browser)                  │
 │  - Collects metrics (response time, tokens, success)    │
+│  - Detects -=COMPLETED=- keyword                        │
 └─────────────────────────────────────────────────────────┘
                           ↓
 ┌─────────────────────────────────────────────────────────┐
@@ -42,18 +44,23 @@
 
 ### 2. Load Test (`src/load-test.ts`)
 - Reads configuration from `.env.local`
-- Creates parallel sessions (configurable concurrency)
-- Sends requests with exact browser format:
+- Sequential question execution (runs all questions in order)
+- Sends requests with Email Intelligence API format:
   ```json
   {
     "message": [[{"type": "text", "text": "question"}]],
     "history": [],
     "config": {
-      "expert_routing": true,
-      "memory": true
-    }
+      "expert_routing": {...},
+      "memory": {...},
+      "graph_token": "default-graph-token"
+    },
+    "graph_token": "default-graph-token",
+    "query": "question text"
   }
   ```
+- Auto token refresh on HTTP 401 or "Invalid token"
+- Detects `-=COMPLETED=-` keyword in response
 - Enforces pause between requests (default: 1 minute)
 - Saves metrics to JSON
 
@@ -106,12 +113,15 @@ const summary = {
 ```
 
 ## API Endpoint
-- **URL**: Configured via `API_ENDPOINT` environment variable in `.env.local`
+
+### Current: Email Intelligence API
+- **URL**: `https://ncsgptapimiddlewareprod.victoriousglacier-6d23f7bf.southeastasia.azurecontainerapps.io/msagents/api/v1/email-intelligence`
 - **Method**: POST
 - **Headers**: 
   - `Authorization: Bearer <AUTH_TOKEN>`
   - `X-API-Key: Bearer <API_KEY>`
   - `Content-Type: application/json`
-- **Response**: Server-Sent Events (SSE) stream
+- **Request Body**: Includes `graph_token` field (required)
+- **Response**: Server-Sent Events (SSE) stream with BotResponseChunk and JSONChunk
 
-**Note:** The endpoint URL is extracted automatically by `npm run extract-tokens` or can be manually captured from browser DevTools Network tab. See README.md "How to Find the API Endpoint" section for details.
+**Note:** The endpoint URL is hardcoded in source files. Token extraction via `npm run extract-tokens` captures auth tokens from browser session.

@@ -5,25 +5,29 @@
 ### Core Functionality
 - ✅ Token extraction from browser sessions (Playwright-based)
 - ✅ Automatic capture of dual auth headers (Authorization + X-API-Key)
-- ✅ Direct API calls with correct request format
-- ✅ Parallel session support (configurable concurrency)
+- ✅ Direct API calls with correct request format (Email Intelligence API)
+- ✅ Sequential question execution (all 10 questions in order)
 - ✅ Metrics collection (response time, success rate, tokens)
 - ✅ Results saved to timestamped JSON files
 
 ### Automation
 - ✅ Cross-platform setup scripts (bash + PowerShell)
 - ✅ Token validation before test execution
-- ✅ Auto-refresh tokens when expired (401 detection)
+- ✅ Auto-refresh tokens when expired (401 detection + auto re-extraction)
 - ✅ One-command test execution (`./scripts/run-tests.sh`)
 - ✅ Git-safe configuration (`.env.local` ignored)
-- ✅ **Security scanning pipeline (GitHub Actions)**
-- ✅ **Local security scanning with Semgrep**
+- ✅ Completion detection (`-=COMPLETED=-` keyword)
+- ✅ Exit on unhandled failures with error details
+
+### Test Questions
+- ✅ 10 test questions configured (email summary, unread, high priority, system alerts, external, attachments, sender search, keyword search, combined filters)
 
 ### Documentation
 - ✅ Comprehensive README with workflows
 - ✅ Team collaboration guide (two options)
 - ✅ Troubleshooting section
 - ✅ Configuration reference
+- ✅ Memory Bank (6 core files)
 
 ## What's Left to Build
 

@@ -1,20 +1,21 @@
 ## Current Focus
 
-**Date:** 2026-07-24
+**Date:** 2026-07-28
 
-**Status:** Core functionality complete, CI/CD security scanning added
+**Status:** Core functionality complete, 10 test questions configured, preparing for Go refactor
 
 ## Recent Work
 
 ### Completed Features
 - ✅ Token extraction via Playwright (automated, captures dual headers)
 - ✅ Direct API load testing (no browser needed during tests)
-- ✅ Automatic token validation and refresh (401 detection)
-- ✅ Parallel session support (configurable concurrency)
+- ✅ Automatic token validation and refresh (401 detection + auto re-extraction)
+- ✅ Sequential question execution (runs all questions in order)
 - ✅ Cross-platform scripts (bash + PowerShell)
 - ✅ Results storage (timestamped JSON files)
 - ✅ Git-safe configuration (`.env.local` ignored)
-- ✅ Security scanning with Semgrep (GitHub Actions + local)
+- ✅ Completion detection (`-=COMPLETED=-` keyword)
+- ✅ 10 test questions configured (email summary, unread, high priority, system alerts, etc.)
 
 ### Documentation Created
 - ✅ Comprehensive README with workflows
@@ -26,11 +27,11 @@
 ## Next Steps
 
 - [x] Token extraction automated
-- [x] Load test script working
+- [x] Load test script working with auto token refresh
 - [x] Automation scripts created
 - [x] Documentation complete
-- [x] Security scanning configured
-- [x] Questions externalized to questions.txt
+- [x] 10 test questions configured
+- [ ] Refactor from Node.js/TypeScript to Go
 - [ ] Push to Git for team access
 - [ ] Team onboarding and testing
 
@@ -53,6 +54,15 @@
 - Easier debugging and maintenance
 - Cross-platform support built-in
 
+### Language Choice (Upcoming)
+**Decision:** Refactor from TypeScript to Go.
+
+**Rationale:**
+- Single binary deployment (no Node.js runtime needed)
+- Better performance for concurrent HTTP requests
+- Smaller memory footprint
+- Easier cross-platform compilation
+
 ### Pause Duration
 **Decision:** 1 minute between requests (reduced from 3 minutes).
 
@@ -60,6 +70,14 @@
 - Faster testing cycles (3x more requests per hour)
 - Still respectful of rate limits
 - Configurable via `.env.local`
+
+### Completion Detection
+**Decision:** Use `-=COMPLETED=-` keyword to detect end of response.
+
+**Rationale:**
+- Clear signal that question processing is complete
+- Allows immediate exit without waiting for timeout
+- All 10 test questions include this keyword
 
 ### Question Complexity
 **Decision:** Use Complexity Level 5 questions for maximum token generation.

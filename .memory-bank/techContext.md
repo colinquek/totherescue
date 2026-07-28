@@ -1,6 +1,6 @@
 # Technical Context
 
-## Technologies Used
+## Technologies Used (Current - Node.js/TypeScript)
 
 ### Runtime
 - **Node.js**: v18+ (ES modules)
@@ -23,7 +23,19 @@
 - **npm**: Package management
 - **Git**: Version control
 - **Semgrep**: Security scanning (SAST, secrets detection)
-- **GitHub Actions**: CI/CD pipeline automation
+
+## Planned Technologies (Go Refactor)
+
+### Runtime
+- **Go**: 1.21+ (modules)
+- **colly** or **rod**: Browser automation (alternative to Playwright)
+- **net/http**: HTTP client (standard library)
+
+### Benefits
+- Single binary deployment
+- No runtime dependencies
+- Better concurrency model (goroutines)
+- Smaller memory footprint
 
 ## Development Setup
 
@@ -43,26 +55,51 @@ cd totherescue
 .\scripts\setup.ps1       # Windows
 ```
 
-### Project Structure
+### Project Structure (Current - Node.js)
 ```
 totherescue/
 ├── src/
-│   ├── extract-tokens.ts     # Token extraction
-│   ├── load-test.ts          # Load test runner
+│   ├── extract-tokens.ts     # Token extraction (Playwright)
+│   ├── load-test.ts          # Load test runner (sequential)
 │   ├── test-chat-api.ts      # API validation
 │   └── simple-test.ts        # Quick API test
 ├── scripts/
 │   ├── setup.sh / setup.ps1  # Setup automation
 │   └── run-tests.sh / run-tests.ps1  # Test orchestration
 ├── questions/                # Test questions directory
-│   ├── index.json            # Question index (metadata)
-│   ├── 01-complexity-1.txt   # Question files
-│   └── 02-complexity-5.txt   # Question files
+│   ├── index.json            # Question index (10 questions)
+│   ├── 01-email_summary.txt
+│   ├── 02-unread_mails.txt
+│   ├── 03-high_priority_mails.txt
+│   ├── 04-sys_alert_mails.txt
+│   ├── 05-sys_alert_mails_chart.txt
+│   ├── 06-external_emails.txt
+│   ├── 07-emails_with_attachments.txt
+│   ├── 08-sender_search.txt
+│   ├── 09-keyword_search.txt
+│   └── 10-unread_high_priority.txt
 ├── results/                  # Test output (gitignored)
 ├── .env.local                # Tokens (gitignored)
 ├── package.json
 ├── tsconfig.json
 └── .gitignore
+```
+
+### Planned Project Structure (Go)
+```
+totherescue/
+├── cmd/
+│   ├── extract-tokens/       # Token extraction CLI
+│   └── load-test/            # Load test CLI
+├── internal/
+│   ├── tokens/               # Token extraction logic
+│   ├── api/                  # API client
+│   └── questions/            # Question loader
+├── questions/                # Same question files
+├── results/                  # Test output
+├── .env.local                # Tokens
+├── go.mod
+└── go.sum
 ```
 
 ## Technical Constraints
@@ -127,13 +164,14 @@ docker run --rm -v "$(pwd):/src" semgrep/semgrep:latest semgrep scan --config p/
 ```bash
 AUTH_TOKEN=<JWT token>
 API_KEY=<JWT token>
+GRAPH_TOKEN=<graph token or 'default-graph-token'>
 CONVERSATION_ID=<UUID>
 PAUSE_MINUTES=1
 CONCURRENT_SESSIONS=1
 DURATION_MINUTES=0
 ```
 
-### npm Scripts
+### npm Scripts (Current)
 ```json
 {
   "extract-tokens": "ts-node src/extract-tokens.ts",
@@ -141,4 +179,11 @@ DURATION_MINUTES=0
   "load-test": "ts-node src/load-test.ts",
   "simple-test": "ts-node src/simple-test.ts"
 }
+```
+
+### Go Commands (Planned)
+```bash
+go run cmd/extract-tokens/main.go   # Token extraction
+go run cmd/load-test/main.go        # Load test
+go build -o totherescue             # Build binary
 ```
