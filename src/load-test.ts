@@ -57,16 +57,8 @@ if (!CONVERSATION_ID) {
   console.log(`📝 Generated new Conversation ID: ${CONVERSATION_ID}\n`);
 }
 
-// Load API endpoint from environment
-const API_ENDPOINT = process.env.API_ENDPOINT || (() => {
-  const endpointMatch = envContent.match(/^API_ENDPOINT=(.+)$/m);
-  if (!endpointMatch) {
-    console.error('❌ API_ENDPOINT not found in .env.local!');
-    console.error('   Please add API_ENDPOINT to your .env.local file\n');
-    process.exit(1);
-  }
-  return endpointMatch[1].trim();
-})();
+// Hardcoded API endpoint
+const API_ENDPOINT = 'https://ncsgptapimiddlewareprod.victoriousglacier-6d23f7bf.southeastasia.azurecontainerapps.io/orchestrator/sk-chat/stream';
 
 interface TestMetrics {
   sessionId: string;

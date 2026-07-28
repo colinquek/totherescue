@@ -46,17 +46,12 @@ if (!authMatch || !apiKeyMatch) {
 const AUTH_TOKEN = authMatch[1].trim();
 const API_KEY = apiKeyMatch[1].trim();
 let CONVERSATION_ID = convMatch ? convMatch[1].trim() : '';
-const API_ENDPOINT = process.env.API_ENDPOINT || envContent.match(/^API_ENDPOINT=(.+)$/m)?.[1].trim();
+// Hardcoded API endpoint
+const API_ENDPOINT = 'https://ncsgptapimiddlewareprod.victoriousglacier-6d23f7bf.southeastasia.azurecontainerapps.io/orchestrator/sk-chat/stream';
 
 if (!CONVERSATION_ID) {
   CONVERSATION_ID = randomUUID();
   console.log(`📝 Generated new Conversation ID: ${CONVERSATION_ID}`);
-}
-
-if (!API_ENDPOINT) {
-  console.error('❌ API_ENDPOINT not found in .env.local!');
-  console.error('   Please add API_ENDPOINT to your .env.local file\n');
-  process.exit(1);
 }
 
 interface TextItem {
@@ -118,14 +113,14 @@ interface ChatRequest {
 
 async function sendChatMessage(message: string): Promise<void> {
   console.log('📤 Sending message to SomeGPT API...\n');
-  console.log(`Endpoint: ${CHAT_ENDPOINT}`);
+  console.log(`Endpoint: ${API_ENDPOINT}`);
   console.log(`Message: "${message}"\n`);
   
   const headers: Record<string, string> = {
     'accept': '*/*',
     'accept-language': 'en-US,en;q=0.9',
     'authorization': `Bearer ${AUTH_TOKEN}`,
-    'x-api-key': API_KEY,
+    'x-api-key': `Bearer ${API_KEY}`,
     'content-type': 'application/json',
     'origin': 'https://ncsgpt.ncs.com.sg',
     'referer': 'https://ncsgpt.ncs.com.sg/',
@@ -163,7 +158,7 @@ async function sendChatMessage(message: string): Promise<void> {
   try {
     const startTime = Date.now();
     
-    const response = await fetch(CHAT_ENDPOINT, {
+    const response = await fetch(API_ENDPOINT, {
       method: 'POST',
       headers,
       body: JSON.stringify(requestBody),

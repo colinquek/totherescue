@@ -23,6 +23,7 @@ const __dirname = path.dirname(__filename);
 interface ExtractedTokens {
   authorization: string;
   xApiKey: string;
+  apiEndpoint: string;
   timestamp: string;
 }
 
