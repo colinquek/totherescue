@@ -34,6 +34,41 @@
       "name": "System Alert Mails Chart",
       "complexity": 3,
       "description": "Get system alert emails with chart"
+    },
+    {
+      "id": "06-external_emails.txt",
+      "file": "06-external_emails.txt",
+      "name": "External Emails",
+      "complexity": 2,
+      "description": "Filter external emails from last 7 days"
+    },
+    {
+      "id": "07-emails_with_attachments.txt",
+      "file": "07-emails_with_attachments.txt",
+      "name": "Emails with Attachments",
+      "complexity": 2,
+      "description": "Find emails with attachments"
+    },
+    {
+      "id": "08-sender_search.txt",
+      "file": "08-sender_search.txt",
+      "name": "Sender Search",
+      "complexity": 2,
+      "description": "Search emails by sender"
+    },
+    {
+      "id": "09-keyword_search.txt",
+      "file": "09-keyword_search.txt",
+      "name": "Keyword Search",
+      "complexity": 2,
+      "description": "Search emails by keyword"
+    },
+    {
+      "id": "10-unread_high_priority.txt",
+      "file": "10-unread_high_priority.txt",
+      "name": "Unread High Priority",
+      "complexity": 3,
+      "description": "Combined filter: unread + high priority"
     }
   ]
 }

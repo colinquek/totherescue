@@ -1,0 +1,1 @@
+show me all external emails from the last 7 days and end your response with '-=COMPLETED=-'

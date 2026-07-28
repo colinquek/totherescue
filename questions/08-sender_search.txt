@@ -1,0 +1,1 @@
+search for emails from my manager in the last 5 days and end your response with '-=COMPLETED=-'

@@ -1,0 +1,1 @@
+find emails about 'project update' from the last 3 days and end your response with '-=COMPLETED=-'

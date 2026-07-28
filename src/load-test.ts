@@ -16,6 +16,7 @@ import * as path from 'path';
 import { fileURLToPath } from 'url';
 import https from 'https';
 import { randomUUID } from 'crypto';
+import { execSync } from 'child_process';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -161,7 +162,7 @@ Remember: Think deeply, verify thoroughly, but present only your final answer.`;
 async function sendChatRequest(
   message: string,
   sessionId: string
-): Promise<{ success: boolean; responseTime: number; tokens?: number; error?: string; response?: string }> {
+): Promise<{ success: boolean; responseTime: number; tokens?: number; error?: string; response?: string; tokenExpired?: boolean }> {
   const startTime = Date.now();
   
   try {
@@ -218,10 +219,12 @@ async function sendChatRequest(
     const responseBody = await response.text();
     
     if (!response.ok) {
+      const isTokenExpired = response.status === 401 || (responseBody && responseBody.includes('Invalid token'));
       return {
         success: false,
         responseTime,
-        error: `HTTP ${response.status}: ${responseBody.substring(0, 200)}`
+        error: `HTTP ${response.status}: ${responseBody.substring(0, 200)}`,
+        tokenExpired: isTokenExpired
       };
     }
     
@@ -294,7 +297,33 @@ async function runSession(
     console.log(`   ${question}`);
     console.log(`\n   Sending request...`);
     
-    const result = await sendChatRequest(question, sessionId);
+    let result = await sendChatRequest(question, sessionId);
+    
+    // Handle token expiry - auto re-extract tokens
+    if (!result.success && result.tokenExpired) {
+      console.log('\n[!] Token expired! Re-extracting tokens...\n');
+      
+      // Run token extraction
+      try {
+        execSync('npm run extract-tokens', { stdio: 'inherit', cwd: path.join(__dirname, '..') });
+        
+        // Reload tokens from .env.local
+        envContent = fs.readFileSync(envPath, 'utf-8');
+        const authMatch = envContent.match(/^AUTH_TOKEN=(.+)$/m);
+        const apiKeyMatch = envContent.match(/^API_KEY=(.+)$/m);
+        AUTH_TOKEN = authMatch ? authMatch[1].trim() : '';
+        API_KEY = apiKeyMatch ? apiKeyMatch[1].trim() : '';
+        
+        console.log('\nTokens refreshed. Retrying request...\n');
+        
+        // Retry the request
+        result = await sendChatRequest(question, sessionId);
+      } catch (extractError) {
+        console.log('Failed to re-extract tokens:', extractError instanceof Error ? extractError.message : extractError);
+        console.log('\nExiting due to token expiry and failed re-extraction.\n');
+        process.exit(1);
+      }
+    }
     
     metrics.totalRequests++;
     
@@ -309,12 +338,24 @@ async function runSession(
     } else {
       metrics.failedRequests++;
       metrics.errors.push(result.error || 'Unknown error');
+      
+      // Exit on non-token failures (e.g., network errors, server errors)
+      if (!result.tokenExpired) {
+        console.log(`\n[!] Unhandled failure: ${result.error}`);
+        console.log('\nExiting due to request failure.\n');
+        process.exit(1);
+      }
     }
     
     responseTimes.push(result.responseTime);
     metrics.avgResponseTime = responseTimes.reduce((a, b) => a + b, 0) / responseTimes.length;
     
     console.log(`   ${result.success ? '[OK]' : '[FAIL]'} ${result.responseTime}ms${result.tokens ? ` | ${result.tokens} tokens` : ''}`);
+    
+    // Show error details for failed requests
+    if (result.error && !result.tokenExpired) {
+      console.log(`   Error: ${result.error}`);
+    }
     
     // Log response if not completed
     if (result.response && !result.response.includes('-=COMPLETED=-')) {
