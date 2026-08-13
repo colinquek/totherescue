@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="MailSage Email Intelligence Test" enabled="true">
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments"/>
+      </elementProp>
+      <stringProp name="TestPlan.user_define_classpath"></stringProp>
+    </TestPlan>
+    <hashTree>
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="Environment Variables" enabled="true">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="API_ENDPOINT" elementType="Argument" testname="API_ENDPOINT">
+            <stringProp name="Argument.name">API_ENDPOINT</stringProp>
+            <stringProp name="Argument.value">${__env(API_ENDPOINT,)}</stringProp>
+          </elementProp>
+          <elementProp name="AUTH_TOKEN" elementType="Argument" testname="AUTH_TOKEN">
+            <stringProp name="Argument.name">AUTH_TOKEN</stringProp>
+            <stringProp name="Argument.value">${__env(AUTH_TOKEN,)}</stringProp>
+          </elementProp>
+          <elementProp name="API_KEY" elementType="Argument" testname="API_KEY">
+            <stringProp name="Argument.name">API_KEY</stringProp>
+            <stringProp name="Argument.value">${__env(API_KEY,)}</stringProp>
+          </elementProp>
+          <elementProp name="GRAPH_TOKEN" elementType="Argument" testname="GRAPH_TOKEN">
+            <stringProp name="Argument.name">GRAPH_TOKEN</stringProp>
+            <stringProp name="Argument.value">${__env(GRAPH_TOKEN,)}</stringProp>
+          </elementProp>
+        </collectionProp>
+      </Arguments>
+      <hashTree/>
+      
+      <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Questions CSV" enabled="true">
+        <stringProp name="filename">questions.csv</stringProp>
+        <stringProp name="fileEncoding">UTF-8</stringProp>
+        <stringProp name="variableNames">question_text</stringProp>
+        <stringProp name="delimiter">,</stringProp>
+        <boolProp name="quotedData">false</boolProp>
+        <boolProp name="recycle">true</boolProp>
+        <boolProp name="stopThread">false</boolProp>
+        <boolProp name="shareMode">all</boolProp>
+      </CSVDataSet>
+      <hashTree/>
+      
+      <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Through Questions" enabled="true">
+        <boolProp name="LoopController.continue_forever">false</boolProp>
+        <stringProp name="LoopController.loops">10</stringProp>
+      </LoopController>
+      <hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Email Intelligence API" enabled="true">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">ncsgptapimiddlewareprod.victoriousglacier-6d23f7bf.southeastasia.azurecontainerapps.io</stringProp>
+          <stringProp name="HTTPSampler.port"></stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+          <stringProp name="HTTPSampler.path">/msagents/api/v1/email-intelligence</stringProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Headers" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="Content-Type" elementType="Header" testname="Content-Type">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+              <elementProp name="Authorization" elementType="Header" testname="Authorization">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${AUTH_TOKEN}</stringProp>
+              </elementProp>
+              <elementProp name="X-API-Key" elementType="Header" testname="X-API-Key">
+                <stringProp name="Header.name">X-API-Key</stringProp>
+                <stringProp name="Header.value">Bearer ${API_KEY}</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          
+          <HTTPFileArgs guiclass="HTTPFileArgsGui" testclass="HTTPFileArgs" testname="HTTP Raw Request" enabled="true">
+            <elementProp name="HTTPFileArgs.files" elementType="HTTPFileCollection">
+              <collectionProp name="HTTPFileArgs.files"/>
+            </elementProp>
+            <stringProp name="HTTPFileArgs.mimetype">application/json</stringProp>
+          </HTTPFileArgs>
+          <hashTree/>
+          
+          <BodyData guiclass="TestBeanGUI" testclass="BodyData" testname="Request Body" enabled="true">
+            <stringProp name="BodyData">{&#xd;
+  "message": [[&#xd;
+    {&#xd;
+      "type": "text",&#xd;
+      "text": "${question_text}"&#xd;
+    }&#xd;
+  ]],&#xd;
+  "history": [],&#xd;
+  "config": {&#xd;
+    "expert_routing": {&#xd;
+      "expertNames": ["GPT 5.4"],&#xd;
+      "forceRoute": true,&#xd;
+      "fileProcess": true&#xd;
+    },&#xd;
+    "experts_with_rbac": {&#xd;
+      "names": [],&#xd;
+      "hashTime": "${__time()}",&#xd;
+      "hash": "jmeter-test"&#xd;
+    },&#xd;
+    "memory": {&#xd;
+      "user_id": "5db3ed13-73b5-4f93-8ce1-2fa7701888e7",&#xd;
+      "session_id": "jmeter-${__time()}"&#xd;
+    }&#xd;
+  }&#xd;
+}</stringProp>
+          </BodyData>
+          <hashTree/>
+          
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Check Completion Marker" enabled="true">
+            <collectionProp name="Assertion.test_strings">
+              <stringProp name="0">-=COMPLETED=-</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        
+        <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="1 Minute Pause" enabled="true">
+          <stringProp name="ConstantTimer.delay">60000</stringProp>
+        </ConstantTimer>
+        <hashTree/>
+      </hashTree>
+      
+      <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="Summary Report" enabled="true">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>true</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>false</xml>
+            <fieldNames>true</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <threadCounts>true</threadCounts>
+            <idleTime>true</idleTime>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename"></stringProp>
+      </ResultCollector>
+      <hashTree/>
+      
+      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>true</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>true</responseData>
+            <samplerData>true</samplerData>
+            <xml>true</xml>
+            <fieldNames>true</fieldNames>
+            <responseHeaders>true</responseHeaders>
+            <requestHeaders>true</requestHeaders>
+            <threadCounts>true</threadCounts>
+            <idleTime>true</idleTime>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename"></stringProp>
+      </ResultCollector>
+      <hashTree/>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>

@@ -65,6 +65,15 @@
   - Decision: Abandoned in favor of existing Node.js scripts which work reliably
   - Files removed: All JMeter-related .jmx, scripts, and documentation
 
+- ⚠️ **JMeter Re-evaluation** (2026-07-28)
+  - Created JMX test plan with CSV data set for 10 questions
+  - Environment variable integration for tokens (AUTH_TOKEN, API_KEY, GRAPH_TOKEN)
+  - Response assertion for `-=COMPLETED=-` marker
+  - Issue: Ubuntu repo has JMeter 2.13, JMX file requires 5.6+
+  - Version incompatibility: `NonGUIDriver com.thoughtworks.xstream.security.ForbiddenClassException`
+  - Decision: Stick with Go implementation which is working reliably
+  - Files created: `mailSage-test.jmx`, `questions.csv`, `JMETER_SETUP.md` (for reference)
+
 ### Known Issues
 - None currently blocking
 

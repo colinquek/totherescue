@@ -136,7 +136,7 @@ totherescue/
 
 ## Tool Usage Patterns
 
-### Go Commands (Implemented)
+### Go Implementation (Primary)
 
 **Token Extraction:**
 ```bash
@@ -146,7 +146,33 @@ go run cmd/extract-tokens/main.go
 # Opens browser → User logs in → Saves .env.local
 ```
 
-**API Validation:**
+**Load Testing:**
+```bash
+go run cmd/run-queries/main.go
+# Sequential execution through all questions
+# Checks for -=COMPLETED=- marker
+# Auto-refreshes tokens if expired
+```
+
+### JMeter (Explored - Not Adopted)
+
+**Approach:**
+```bash
+# 1. Extract tokens (Go)
+go run cmd/extract-tokens/main.go
+
+# 2. Export to env vars
+export $(cat .env.local | xargs)
+
+# 3. Run JMeter
+jmeter -n -t mailSage-test.jmx -l results.jtl
+```
+
+**Blocker:** Ubuntu repo JMeter 2.13 incompatible with JMX 5.6+ format
+
+### Legacy Node.js Commands (Deprecated)
+
+**Token Extraction:**
 ```bash
 go run cmd/test-chat/main.go
 # or

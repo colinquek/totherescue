@@ -39,6 +39,7 @@
 - [x] README.md updated for Go
 - [x] TypeScript code removed
 - [x] .gitignore updated for Go
+- [x] JMeter exploration completed (JMX file created, version incompatibility found)
 
 ### Remaining
 - [ ] Push to Git for team access
