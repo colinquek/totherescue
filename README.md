@@ -8,7 +8,7 @@ Automated API discovery, token extraction, and email querying for SomeGPT (NCS G
 
 **Built with Go** - Single binary deployment, no runtime dependencies.
 
-## What This Does 1
+## What This Does
 
 This toolkit helps you:
 1. **Extract fresh authentication tokens** automatically from your browser
